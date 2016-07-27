@@ -1,3 +1,5 @@
+.PHONY: venv
+
 usage:
 	@echo "make venv"
 
