@@ -33,5 +33,7 @@ def register_jinja2(app):
 
 def register_route(app):
     from .routes import index
+    from .routes import api
 
+    app.register_blueprint(api.pokemon.blueprint, url_prefix='/api')
     app.register_blueprint(index.blueprint, url_prefix='')
