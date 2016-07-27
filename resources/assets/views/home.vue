@@ -29,50 +29,75 @@
             Please enter account to load pokemon data.
         </div>
 
-        <div class="table-responsive" v-if="pokemons.length > 0">
-            <table class="table table-striped table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Pokemon</th>
-                        <th>Fast</th>
-                        <th>Special</th>
-                        <th>Level</th>
-                        <th v-on:click="sortBy('cp')">CP</th>
-                        <th>HP</th>
-                        <th class="attack">ATK</th>
-                        <th class="defense">DEF</th>
-                        <th class="stamina">STA</th>
-                        <th v-on:click="sortBy('piv')">IV%</th>
-                        <th v-on:click="sortBy('pcp')">CP%</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="pokemon in pokemons | orderBy sortKey -1">
-                        <td>
-                            <div class="name pull-left">
-                                <img v-bind:src="pokemon.pokemon_id | pokemonIcon">
-                                {{ (pokemon.nickname || pokemon.name || '') | formatName }}
-                            </div>
-                        </td>
-                        <td>
-                            <span class="pull-left">{{ pokemon.move1Name | formatName }}</span>
-                            <label class="label label-default pull-right visible-md-block visible-lg-block">{{ pokemon.move1 }}</label>
-                        </td>
-                        <td>
-                            <span class="pull-left">{{ pokemon.move2Name | formatName }}</span>
-                            <label class="label label-default pull-right visible-md-block visible-lg-block">{{ pokemon.move2 }}</label>
-                        </td>
-                        <td>{{ pokemon.level }}</td>
-                        <td>{{ pokemon.cp }}</td>
-                        <td>{{ pokemon.hp_max }}</td>
-                        <td class="attack">{{ pokemon.attack }}</td>
-                        <td class="defense">{{ pokemon.defense }}</td>
-                        <td class="stamina">{{ pokemon.stamina }}</td>
-                        <td>{{ pokemon.perfectIV | formatPercentage }}</td>
-                        <td>{{ pokemon.perfectCP | formatPercentage }}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="pokemon-info" v-if="pokemons.length > 0">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <span class="text-info">Total Pokemon</span>:
+                            {{ pokemons.length }}
+
+                            <strong>,</strong>
+                            <span class="text-info">Good IV (>= 80%)</span>:
+                            {{ stats.total_80_perfect_iv }}
+
+                            <strong>,</strong>
+                            <span class="text-info">Good CP (>= 80%)</span>:
+                            {{ stats.total_80_perfect_cp }}
+
+                            <strong>,</strong>
+                            <span class="text-info">Highest CP</span>:
+                            {{ stats.highest_pokemon.cp }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Pokemon</th>
+                            <th>Fast</th>
+                            <th>Special</th>
+                            <th>Level</th>
+                            <th v-on:click="sortBy('cp')">CP</th>
+                            <th>HP</th>
+                            <th class="attack">ATK</th>
+                            <th class="defense">DEF</th>
+                            <th class="stamina">STA</th>
+                            <th v-on:click="sortBy('piv')">IV%</th>
+                            <th v-on:click="sortBy('pcp')">CP%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="pokemon in pokemons | orderBy sortKey -1">
+                            <td>
+                                <div class="name pull-left">
+                                    <img v-bind:src="pokemon.pokemon_id | pokemonIcon">
+                                    {{ (pokemon.nickname || pokemon.name || '') | formatName }}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="pull-left">{{ pokemon.move1Name | formatName }}</span>
+                                <label class="label label-default pull-right visible-md-block visible-lg-block">{{ pokemon.move1 }}</label>
+                            </td>
+                            <td>
+                                <span class="pull-left">{{ pokemon.move2Name | formatName }}</span>
+                                <label class="label label-default pull-right visible-md-block visible-lg-block">{{ pokemon.move2 }}</label>
+                            </td>
+                            <td>{{ pokemon.level }}</td>
+                            <td>{{ pokemon.cp }}</td>
+                            <td>{{ pokemon.hp_max }}</td>
+                            <td class="attack">{{ pokemon.attack }}</td>
+                            <td class="defense">{{ pokemon.defense }}</td>
+                            <td class="stamina">{{ pokemon.stamina }}</td>
+                            <td>{{ pokemon.perfectIV | formatPercentage }}</td>
+                            <td>{{ pokemon.perfectCP | formatPercentage }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </template>
@@ -139,6 +164,11 @@ export default {
             auth_method  : "ptc",
             sorted_column: 'cp',
             pokemons     : [],
+            stats        : {
+                highest_pokemon    : null,
+                total_80_perfect_iv: 0,
+                total_80_perfect_cp: 0,
+            }
         }
     },
 
@@ -185,6 +215,18 @@ export default {
 
                             pokemons[i].move1Name = moves[pokemon.move1].Name
                             pokemons[i].move2Name = moves[pokemon.move2].Name
+
+                            if (this.stats.highest_pokemon === null || this.stats.highest_pokemon.cp < pokemon.cp) {
+                                this.stats.highest_pokemon = pokemon
+                            }
+
+                            if (pokemon.perfectIV > 0.8) {
+                                this.stats.total_80_perfect_iv++
+                            }
+
+                            if (pokemon.perfectCP > 0.8) {
+                                this.stats.total_80_perfect_cp++
+                            }
                         }
 
                         this.pokemons = pokemons
