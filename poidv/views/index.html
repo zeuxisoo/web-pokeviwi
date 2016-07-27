@@ -6,17 +6,17 @@
 <title>Poidv</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 {% if config.get('DEBUG') %}
-    <link rel="stylesheet" href="http://localhost:9090/build/bundle.css">
+    <link rel="stylesheet" href="http://localhost:9090/static/build/bundle.css">
 {% else %}
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="{{ asset_url('main.css') }}">
 {% endif %}
 </head>
 <body>
 <div id="app"></div>
 {% if config.get('DEBUG') %}
-    <script src="http://localhost:9090/build/bundle.js"></script>
+    <script src="http://localhost:9090/static/build/bundle.js"></script>
 {% else %}
-    <script src="main.js"></script>
+    <script src="{{ asset_url('main.js') }}"></script>
 {% endif %}
 </body>
 </html>

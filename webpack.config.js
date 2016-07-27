@@ -4,13 +4,13 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 var cssLoader = ExtractTextPlugin.extract("style-loader", "css-loader?sourceMap!postcss-loader");
 
-var publicPath = "/build/";
+var publicPath = "/static/build/";
 
 module.exports = {
     entry: ["./resources/assets/app.js"],
 
     output: {
-        path: __dirname + '/static' + publicPath,
+        path: __dirname + publicPath,
         filename: 'bundle.js',
         publicPath: publicPath,
         pathinfo: true

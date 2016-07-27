@@ -1,7 +1,9 @@
 # coding: utf-8
 
+import json
 from os import path
 from flask import Flask
+from flask import url_for
 
 def create_app(config=None, enable_route=True):
     app = Flask(__name__, template_folder='views')
@@ -29,7 +31,17 @@ def create_app(config=None, enable_route=True):
     return app
 
 def register_jinja2(app):
-    pass
+    @app.context_processor
+    def utility_processor():
+        def asset_url(filename):
+            rev_manifest_path = path.join(app.static_folder, 'build/rev-manifest.json')
+
+            with open(rev_manifest_path, 'r') as f:
+                rev_manifest = json.loads(f.read())
+                return url_for('static', filename='build/' + rev_manifest[filename])
+
+        return dict(asset_url=asset_url)
+
 
 def register_route(app):
     from .routes import index
