@@ -3,5 +3,6 @@
 *.pyo
 
 /venv
+/node_modules
 
 /config/default.py
