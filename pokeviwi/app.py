@@ -25,10 +25,16 @@ def create_app(config=None, enable_route=True):
     elif config:
         app.config.from_pyfile(path.abspath(config))
 
+    register_pgoapi(app)
     register_jinja2(app)
     register_route(app)
 
     return app
+
+def register_pgoapi(app):
+    api = PGoApi()
+
+    app.api = api
 
 def register_jinja2(app):
     @app.context_processor

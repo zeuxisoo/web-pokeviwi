@@ -1,6 +1,5 @@
 from flask import Blueprint
 from flask import request, jsonify, current_app
-from pgoapi import PGoApi
 
 blueprint = Blueprint('api_auth', __name__)
 
@@ -10,7 +9,7 @@ def login():
     password    = request.json['password']
     auth_method = request.json['auth_method']
 
-    api = PGoApi()
+    api = current_app.api
     api.set_position(0, 0, 0)
 
     if not api.login(auth_method, username, password):
