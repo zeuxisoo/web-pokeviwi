@@ -8,8 +8,8 @@ export default class Player extends Base {
         this.vue = vue
     }
 
-    inventory(params) {
-        return this.vue.http.post(this.apiUrl('/player/inventory'), params)
+    stats(params) {
+        return this.vue.http.post(this.apiUrl('/player/stats'), params)
     }
 
 }

@@ -10,8 +10,8 @@ class PokeBallType(Enum):
     ULTRA  = 3
     MASTER = 4
 
-@blueprint.route('/inventory', methods=['POST'])
-def inventory():
+@blueprint.route('/stats', methods=['POST'])
+def stats():
     api = current_app.api
 
     api.get_inventory()
@@ -19,6 +19,7 @@ def inventory():
     response_dict   = api.call()
     inventory_items = response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
 
+    #
     poke_balls = {
         'base'  : 0,
         'great' : 0,
@@ -42,6 +43,37 @@ def inventory():
         except:
             continue
 
+    #
+    profile_data = {
+        'level'            : 0,
+        'experience'       : 0,
+        'next_level_xp'    : 0,
+        'pokemons_captured': 0,
+        'poke_stop_visits' : 0,
+    }
+
+    for item in inventory_items:
+        if 'player_stats' in item['inventory_item_data']:
+            player_stats = item['inventory_item_data']['player_stats']
+
+            if 'level' in player_stats:
+                profile_data['level'] = player_stats['level']
+
+            if 'experience' in player_stats:
+                profile_data['experience']    = player_stats['experience']
+
+            if 'next_level_xp' in player_stats:
+                profile_data['next_level_xp'] = player_stats['next_level_xp']
+
+            if 'pokemons_captured' in player_stats:
+                profile_data['pokemons_captured'] = player_stats['pokemons_captured']
+
+            if 'poke_stop_visits' in player_stats:
+                profile_data['poke_stop_visits'] = player_stats['poke_stop_visits']
+
     return jsonify(
-        poke_balls = poke_balls
+        player_stats = dict(
+            poke_balls   = poke_balls,
+            profile_data = profile_data
+        )
     )

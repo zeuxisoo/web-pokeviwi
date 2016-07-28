@@ -28,17 +28,42 @@
         <div class="panel panel-default" v-if="player !== null">
             <div class="panel-heading">{{ player.username }}</div>
             <div class="panel-body">
-                <button type="button" class="btn btn-danger" v-on:click="switchAccount" id="switch-account">Switch Account</button>
-                <button type="button" class="btn btn-info" v-on:click="showPokeBalls" id="show-poke-balls">Show Poke Balls</button>
-                <button type="button" class="btn btn-default" v-on:click="showPokemons" id="show-pokemons">Show Pokemons</button>
-                <hr>
-                <span class="text-success">Conis</span>: {{ player.currencies.pokecoin }} -
-                <span class="text-success">Stardust</span>: {{ player.currencies.stardust }}
+                <div class="row">
+                    <div class="col-xs-12 col-md-4 text-center button-block">
+                        <button type="button" class="btn btn-md btn-danger full-width" v-on:click="switchAccount" id="switch-account">Switch Account</a>
+                    </div>
+                    <div class="col-xs-12 col-md-4 text-center button-block">
+                        <button type="button" class="btn btn-md btn-info full-width" v-on:click="showPlayerStats" id="show-player-stats">Show Player Stats</a>
+                    </div>
+                    <div class="col-xs-12 col-md-4 text-center button-block">
+                        <button type="button" class="btn btn-md btn-default full-width" v-on:click="showPokemons" id="show-pokemons">Show Pokemons</a>
+                    </div>
+                </div>
 
-                <span v-if="poke_balls != null">
-                    - <span class="text-success">Base Ball</span>: {{ poke_balls.base }}
-                    - <span class="text-success">Great Ball</span>: {{ poke_balls.great }}
-                    - <span class="text-success">Ultra Ball</span>: {{ poke_balls.ultra }}
+                <hr>
+                <span class="text-success">Currency</span>:
+                <span class="text-muted">
+                    [ Conis: {{ player.currencies.pokecoin }}, Stardust: {{ player.currencies.stardust }} ]
+                </span>
+
+                <span v-if="player_stats != null">
+                    -
+                    <span class="text-success">Profile</span>:
+                    <span class="text-muted">
+                        [ Level: {{ player_stats.profile_data.level }}, PokeStop: {{ player_stats.profile_data.poke_stop_visits }}, Captured: {{ player_stats.profile_data.pokemons_captured }} ]
+                    </span>
+
+                    -
+                    <span class="text-success">PokeBall</span>:
+                    <span class="text-muted">
+                        [ Base: {{ player_stats.poke_balls.base }}, Great: {{ player_stats.poke_balls.great }}, Ultra: {{ player_stats.poke_balls.ultra }} ]
+                    </span>
+
+                    -
+                    <span class="text-success">Next LvExp</span>:
+                    <span class="text-muted">
+                        {{ player_stats.profile_data.next_level_xp - player_stats.profile_data.experience }}
+                    </span>
                 </span>
             </div>
         </div>
@@ -125,6 +150,15 @@
     display: inline;
 }
 
+.button-block {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.full-width {
+    width: 100%;
+}
+
 th, td {
     text-align: center;
 }
@@ -183,7 +217,7 @@ export default {
             sorted_column: 'cp',
             player       : null,
             pokemons     : [],
-            poke_balls   : null,
+            player_stats : null,
             stats        : {
                 highest_pokemon    : null,
                 total_80_perfect_iv: 0,
@@ -246,27 +280,27 @@ export default {
             this.pokemons = []
         },
 
-        showPokeBalls() {
-            var showButton = jQuery("button#show-poke-balls")
+        showPlayerStats() {
+            var showButton = jQuery("button#show-player-stats")
 
             showButton.html("Loading...")
             showButton.prop("disabled", true)
 
-            api.player.inventory({}).then(
+            api.player.stats({}).then(
                 response => {
-                    let data       = response.data
-                    let poke_balls = data.poke_balls
+                    let data         = response.data
+                    let player_stats = data.player_stats
 
-                    this.poke_balls = poke_balls
+                    this.player_stats = player_stats
 
-                    showButton.html("Show Poke Balls")
+                    showButton.html("Show Player Stats")
                     showButton.prop("disabled", false)
                 },
 
                 response => {
                     console.log(response)
 
-                    showButton.html("Show Poke Balls")
+                    showButton.html("Show Player Stats")
                     showButton.prop("disabled", false)
 
                     this.alertError('Unknow error!')
