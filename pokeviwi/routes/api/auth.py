@@ -1,6 +1,6 @@
 from flask import Blueprint
-from flask import request, jsonify, g
-from ...utils import PokemonUtils
+from flask import request, jsonify, current_app
+from pgoapi import PGoApi
 
 blueprint = Blueprint('api_auth', __name__)
 
@@ -10,8 +10,7 @@ def login():
     password    = request.json['password']
     auth_method = request.json['auth_method']
 
-    api = PokemonUtils.initApi()
-
+    api = PGoApi()
     api.set_position(0, 0, 0)
 
     if not api.login(auth_method, username, password):
@@ -39,6 +38,9 @@ def login():
             max_item_storage    = player_data['max_item_storage'],
             created_at          = player_data['creation_timestamp_ms'],
         )
+
+        #
+        current_app.api = api
 
         return jsonify(
             player=player

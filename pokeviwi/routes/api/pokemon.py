@@ -1,12 +1,12 @@
 from flask import Blueprint
-from flask import request, jsonify
+from flask import request, jsonify, current_app
 from ...utils import PokemonUtils
 
 blueprint = Blueprint('api_pokemon', __name__)
 
 @blueprint.route('/all', methods=['POST'])
 def all():
-    api = PokemonUtils.getApi()
+    api = current_app.api
 
     api.get_inventory()
 

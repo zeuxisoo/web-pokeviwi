@@ -1,7 +1,6 @@
 from flask import Blueprint
-from flask import jsonify
+from flask import jsonify, current_app
 from enum import Enum
-from ...utils import PokemonUtils
 
 blueprint = Blueprint('api_player', __name__)
 
@@ -13,7 +12,7 @@ class PokeBallType(Enum):
 
 @blueprint.route('/inventory', methods=['POST'])
 def inventory():
-    api = PokemonUtils.getApi()
+    api = current_app.api
 
     api.get_inventory()
 
