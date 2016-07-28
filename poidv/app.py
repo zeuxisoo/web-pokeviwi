@@ -3,7 +3,8 @@
 import json
 from os import path
 from flask import Flask
-from flask import url_for
+from flask import url_for, g
+from pgoapi import PGoApi
 
 def create_app(config=None, enable_route=True):
     app = Flask(__name__, template_folder='views')
@@ -23,7 +24,6 @@ def create_app(config=None, enable_route=True):
         app.config.update(config)
     elif config:
         app.config.from_pyfile(path.abspath(config))
-
 
     register_jinja2(app)
     register_route(app)
@@ -47,5 +47,6 @@ def register_route(app):
     from .routes import index
     from .routes import api
 
-    app.register_blueprint(api.pokemon.blueprint, url_prefix='/api')
+    app.register_blueprint(api.auth.blueprint, url_prefix='/api/auth')
+    app.register_blueprint(api.pokemon.blueprint, url_prefix='/api/pokemon')
     app.register_blueprint(index.blueprint, url_prefix='')

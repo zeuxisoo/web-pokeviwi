@@ -1,7 +1,13 @@
 <template>
     <div id="home">
         <div class="panel panel-default">
-            <div class="panel-heading">Account</div>
+            <div class="panel-heading">
+                Account
+
+                <span class="text-primary" v-if="player">
+                    - {{ player.username }}
+                </span>
+            </div>
             <div class="panel-body">
                 <div class="form-inline">
                     <div class="form-group">
@@ -19,7 +25,8 @@
                             <option value="google">Google Account</option>
                         </select>
                     </div>
-                    <button type="button" class="btn btn-default" v-on:click="show" id="show">Show</button>
+                    <button type="button" class="btn btn-default" v-on:click="login" id="login">Login</button>
+                    <button type="button" class="btn btn-default" v-on:click="show" id="show" disabled="true">Show</button>
                 </div>
             </div>
         </div>
@@ -167,6 +174,7 @@ export default {
             password     : "",
             auth_method  : "ptc",
             sorted_column: 'cp',
+            player       : null,
             pokemons     : [],
             stats        : {
                 highest_pokemon    : null,
@@ -185,6 +193,51 @@ export default {
     },
 
     methods: {
+        login() {
+            if (this.username === "") {
+                this.alertError("Please enter username")
+            }else if (this.password === "") {
+                this.alertError("Please enter password")
+            }else if ($.inArray(this.auth_method, ['ptc', 'google']) === false) {
+                this.alertError("Please select your account auth method")
+            }else{
+                var loginButton = jQuery("button#login")
+                var showButton  = jQuery("button#show")
+
+                loginButton.html("Signing...")
+                loginButton.prop("disabled", true)
+
+                api.auth.login({
+                    username   : this.username,
+                    password   : this.password,
+                    auth_method: this.auth_method,
+                }).then(
+                    response => {
+                        let data   = response.data
+                        let player = data.player
+
+                        this.player = player
+
+                        loginButton.html("Relogin")
+                        loginButton.prop('disabled', false)
+
+                        showButton.prop('disabled', false)
+                    },
+
+                    response => {
+                        console.log(response)
+
+                        loginButton.html("Show")
+                        loginButton.prop("disabled", false)
+
+                        showButton.prop('disabled', true)
+
+                        this.alertError('Unknow error!')
+                    }
+                )
+            }
+        },
+
         show() {
             if (this.username === "") {
                 this.alertError("Please enter username")
