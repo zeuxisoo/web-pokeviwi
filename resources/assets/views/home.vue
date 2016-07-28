@@ -79,11 +79,11 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="pull-left">{{ pokemon.move1Name | formatName }}</span>
+                                <span class="pull-left" data-toggle="tooltip" data-placement="top" title="{{ pokemon.move1InformationString }}">{{ pokemon.move1Name | formatName }}</span>
                                 <label class="label label-default pull-right visible-md-block visible-lg-block">{{ pokemon.move1 }}</label>
                             </td>
                             <td>
-                                <span class="pull-left">{{ pokemon.move2Name | formatName }}</span>
+                                <span class="pull-left" data-toggle="tooltip" data-placement="top" title="{{ pokemon.move2InformationString }}">{{ pokemon.move2Name | formatName }}</span>
                                 <label class="label label-default pull-right visible-md-block visible-lg-block">{{ pokemon.move2 }}</label>
                             </td>
                             <td>{{ pokemon.level }}</td>
@@ -209,6 +209,9 @@ export default {
                         let data     = response.data
                         let pokemons = data.pokemons
 
+                        this.stats.total_80_perfect_iv = 0
+                        this.stats.total_80_perfect_cp = 0
+
                         for(let i=0; i<pokemons.length; i++) {
                             let pokemon = pokemons[i]
 
@@ -220,7 +223,9 @@ export default {
                             pokemons[i].move1Name = moves[pokemon.move1].Name
                             pokemons[i].move2Name = moves[pokemon.move2].Name
 
-                            pokemons[i].maxAndPerfectCPString = this.generateMaxAndPerfectCPString(pokemon.pokemon_id, pokemon.attack, pokemon.defense, pokemon.stamina)
+                            pokemons[i].move1InformationString = this.generateMovesInformationString(moves[pokemon.move1])
+                            pokemons[i].move2InformationString = this.generateMovesInformationString(moves[pokemon.move2])
+                            pokemons[i].maxAndPerfectCPString  = this.generateMaxAndPerfectCPString(pokemon.pokemon_id, pokemon.attack, pokemon.defense, pokemon.stamina)
 
                             if (this.stats.highest_pokemon === null || this.stats.highest_pokemon.cp < pokemon.cp) {
                                 this.stats.highest_pokemon = pokemon
@@ -330,6 +335,18 @@ export default {
             let maxCp     = (baseAttack + individualAttack) * Math.pow((baseDefense + individualDefense), 0.5) * Math.pow((baseStamina + individualStamina), 0.5) * (Math.pow(LevelToCPM['40'], 2) / 10)
 
             return Math.round(maxCp) + " / " + Math.round(perfectCp)
+        },
+
+        generateMovesInformationString(moves) {
+            let attack   = moves.Power
+            let cooldown = moves.DurationMs / 1000
+            let dps      = (moves.Power / moves.DurationMs) * 1000
+
+            return [
+                "Atk: " + attack,
+                "CD : " + cooldown.toFixed(2),
+                "DPS: " + dps.toFixed(2)
+            ].join(" - ")
         },
 
         generateMovesList() {
