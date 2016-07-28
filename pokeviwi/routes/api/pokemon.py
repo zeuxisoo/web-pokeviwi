@@ -1,6 +1,5 @@
 from flask import Blueprint
 from flask import request, jsonify, current_app
-from ...utils import PokemonUtils
 
 blueprint = Blueprint('api_pokemon', __name__)
 
