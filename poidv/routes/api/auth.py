@@ -10,7 +10,7 @@ def login():
     password    = request.json['password']
     auth_method = request.json['auth_method']
 
-    api = PokemonUtils.getApi()
+    api = PokemonUtils.initApi()
 
     api.set_position(0, 0, 0)
 

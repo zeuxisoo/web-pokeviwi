@@ -5,9 +5,12 @@ class PokemonUtils(object):
     api = None
 
     @classmethod
-    def getApi(cls):
-        if cls.api is None:
-            cls.api = PGoApi()
+    def initApi(cls):
+        cls.api = PGoApi()
 
+        return cls.api
+
+    @classmethod
+    def getApi(cls):
         return cls.api
 

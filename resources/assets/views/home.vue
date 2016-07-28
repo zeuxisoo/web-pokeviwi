@@ -1,13 +1,8 @@
 <template>
     <div id="home">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Account
 
-                <span class="text-primary" v-if="player">
-                    - {{ player.username }}
-                </span>
-            </div>
+        <div class="panel panel-default" v-if="player === null">
+            <div class="panel-heading">Account</div>
             <div class="panel-body">
                 <div class="form-inline">
                     <div class="form-group">
@@ -26,8 +21,15 @@
                         </select>
                     </div>
                     <button type="button" class="btn btn-default" v-on:click="login" id="login">Login</button>
-                    <button type="button" class="btn btn-default" v-on:click="show" id="show" disabled="true">Show</button>
                 </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default" v-if="player !== null">
+            <div class="panel-heading">{{ player.username }}</div>
+            <div class="panel-body">
+                <button type="button" class="btn btn-danger" v-on:click="switchAccount" id="switch-account">Switch Account</button>
+                <button type="button" class="btn btn-default" v-on:click="showPokemons" id="show-pokemons">Show Pokemons</button>
             </div>
         </div>
 
@@ -202,7 +204,6 @@ export default {
                 this.alertError("Please select your account auth method")
             }else{
                 var loginButton = jQuery("button#login")
-                var showButton  = jQuery("button#show")
 
                 loginButton.html("Signing...")
                 loginButton.prop("disabled", true)
@@ -218,19 +219,15 @@ export default {
 
                         this.player = player
 
-                        loginButton.html("Relogin")
+                        loginButton.html("Login")
                         loginButton.prop('disabled', false)
-
-                        showButton.prop('disabled', false)
                     },
 
                     response => {
                         console.log(response)
 
-                        loginButton.html("Show")
+                        loginButton.html("Login")
                         loginButton.prop("disabled", false)
-
-                        showButton.prop('disabled', true)
 
                         this.alertError('Unknow error!')
                     }
@@ -238,15 +235,16 @@ export default {
             }
         },
 
-        show() {
-            if (this.username === "") {
-                this.alertError("Please enter username")
-            }else if (this.password === "") {
-                this.alertError("Please enter password")
-            }else if ($.inArray(this.auth_method, ['ptc', 'google']) === false) {
-                this.alertError("Please select your account auth method")
+        switchAccount() {
+            this.player   = null
+            this.pokemons = []
+        },
+
+        showPokemons() {
+            if (this.player === null) {
+                this.alertError("Please login first")
             }else{
-                var showButton = jQuery("button#show")
+                var showButton = jQuery("button#show-pokemons")
 
                 showButton.html("Loading...")
                 showButton.prop("disabled", true)
@@ -295,13 +293,13 @@ export default {
 
                         this.pokemons = pokemons
 
-                        showButton.html("Show")
+                        showButton.html("Show Pokemons")
                         showButton.prop("disabled", false)
                     },
                     response => {
                         console.log(response)
 
-                        showButton.html("Show")
+                        showButton.html("Show Pokemons")
                         showButton.prop("disabled", false)
 
                         this.alertError('Unknow error!')
