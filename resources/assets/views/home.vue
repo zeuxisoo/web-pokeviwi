@@ -30,6 +30,8 @@
             <div class="panel-body">
                 <button type="button" class="btn btn-danger" v-on:click="switchAccount" id="switch-account">Switch Account</button>
                 <button type="button" class="btn btn-default" v-on:click="showPokemons" id="show-pokemons">Show Pokemons</button>
+                <hr>
+                 Conis: {{ player.currencies.pokecoin }} - Stardust: {{ player.currencies.stardust }}
             </div>
         </div>
 
