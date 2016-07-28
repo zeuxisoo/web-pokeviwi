@@ -1,5 +1,5 @@
 from flask import Blueprint
-from flask import request, jsonify, g
+from flask import request, jsonify
 from ...utils import PokemonUtils
 
 blueprint = Blueprint('api_pokemon', __name__)
@@ -33,7 +33,6 @@ def all():
                 stamina          = pokemon['individual_stamina'] if 'individual_stamina' in pokemon else 0,
                 cp_multiplier    = pokemon['cp_multiplier'],
                 nickname         = pokemon['nickname'] if 'nickname' in pokemon else "",
-                pokeball         = pokemon['pokeball'],
                 creation_time_ms = pokemon['creation_time_ms'],
             ))
 

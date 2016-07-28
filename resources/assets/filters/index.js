@@ -6,6 +6,10 @@ export function formatPercentage(value) {
     return Math.round(value * 100);
 }
 
+export function formatPercentageWith2Fixed(value) {
+    return (value * 100).toFixed(2);
+}
+
 export function formatName(value) {
     let string = value.replace(/\_/g, " ").replace("FAST", "").toLowerCase();
 

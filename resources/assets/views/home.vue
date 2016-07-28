@@ -29,9 +29,17 @@
             <div class="panel-heading">{{ player.username }}</div>
             <div class="panel-body">
                 <button type="button" class="btn btn-danger" v-on:click="switchAccount" id="switch-account">Switch Account</button>
+                <button type="button" class="btn btn-info" v-on:click="showPokeBalls" id="show-poke-balls">Show Poke Balls</button>
                 <button type="button" class="btn btn-default" v-on:click="showPokemons" id="show-pokemons">Show Pokemons</button>
                 <hr>
-                 Conis: {{ player.currencies.pokecoin }} - Stardust: {{ player.currencies.stardust }}
+                <span class="text-success">Conis</span>: {{ player.currencies.pokecoin }} -
+                <span class="text-success">Stardust</span>: {{ player.currencies.stardust }}
+
+                <span v-if="poke_balls != null">
+                    - <span class="text-success">Base Ball</span>: {{ poke_balls.base }}
+                    - <span class="text-success">Great Ball</span>: {{ poke_balls.great }}
+                    - <span class="text-success">Ultra Ball</span>: {{ poke_balls.ultra }}
+                </span>
             </div>
         </div>
 
@@ -106,7 +114,7 @@
                             <td>{{ pokemon.perfectIV | formatPercentage }}</td>
                             <td>
                                 <span data-toggle="tooltip" data-placement="top" title="{{ pokemon.maxAndPerfectCPString }}">
-                                    {{ pokemon.perfectCP | formatPercentage }}
+                                    {{ pokemon.perfectCP | formatPercentageWith2Fixed }}
                                 </span>
                             </td>
                         </tr>
@@ -180,6 +188,7 @@ export default {
             sorted_column: 'cp',
             player       : null,
             pokemons     : [],
+            poke_balls   : null,
             stats        : {
                 highest_pokemon    : null,
                 total_80_perfect_iv: 0,
@@ -240,6 +249,34 @@ export default {
         switchAccount() {
             this.player   = null
             this.pokemons = []
+        },
+
+        showPokeBalls() {
+            var showButton = jQuery("button#show-poke-balls")
+
+            showButton.html("Loading...")
+            showButton.prop("disabled", true)
+
+            api.player.inventory({}).then(
+                response => {
+                    let data       = response.data
+                    let poke_balls = data.poke_balls
+
+                    this.poke_balls = poke_balls
+
+                    showButton.html("Show Poke Balls")
+                    showButton.prop("disabled", false)
+                },
+
+                response => {
+                    console.log(response)
+
+                    showButton.html("Show Poke Balls")
+                    showButton.prop("disabled", false)
+
+                    this.alertError('Unknow error!')
+                }
+            )
         },
 
         showPokemons() {

@@ -3,7 +3,7 @@
 import json
 from os import path
 from flask import Flask
-from flask import url_for, g
+from flask import url_for
 from pgoapi import PGoApi
 
 def create_app(config=None, enable_route=True):
@@ -47,6 +47,7 @@ def register_route(app):
     from .routes import index
     from .routes import api
 
+    app.register_blueprint(api.player.blueprint, url_prefix='/api/player')
     app.register_blueprint(api.auth.blueprint, url_prefix='/api/auth')
     app.register_blueprint(api.pokemon.blueprint, url_prefix='/api/pokemon')
     app.register_blueprint(index.blueprint, url_prefix='')
