@@ -1,5 +1,5 @@
 from flask_script import Manager, Server
-from poidv.app import create_app
+from pokeviwi.app import create_app
 
 app = create_app()
 

@@ -43,11 +43,6 @@
             </div>
         </div>
 
-        <div class="alert alert-info" v-if="pokemons.length <= 0">
-            <strong>Oops!</strong>
-            Please enter account to load pokemon data.
-        </div>
-
         <div class="pokemon-info" v-if="pokemons.length > 0">
             <div class="panel panel-default">
                 <div class="panel-body">
