@@ -38,9 +38,6 @@ def login():
             created_at          = player_data['creation_timestamp_ms'],
         )
 
-        #
-        current_app.api = api
-
         return jsonify(
             player=player
         )
