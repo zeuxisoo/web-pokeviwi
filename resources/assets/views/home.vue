@@ -93,7 +93,11 @@
                             <td class="defense">{{ pokemon.defense }}</td>
                             <td class="stamina">{{ pokemon.stamina }}</td>
                             <td>{{ pokemon.perfectIV | formatPercentage }}</td>
-                            <td>{{ pokemon.perfectCP | formatPercentage }}</td>
+                            <td>
+                                <span data-toggle="tooltip" data-placement="top" title="{{ pokemon.maxAndPerfectCPString }}">
+                                    {{ pokemon.perfectCP | formatPercentage }}
+                                </span>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -216,6 +220,8 @@ export default {
                             pokemons[i].move1Name = moves[pokemon.move1].Name
                             pokemons[i].move2Name = moves[pokemon.move2].Name
 
+                            pokemons[i].maxAndPerfectCPString = this.generateMaxAndPerfectCPString(pokemon.pokemon_id, pokemon.attack, pokemon.defense, pokemon.stamina)
+
                             if (this.stats.highest_pokemon === null || this.stats.highest_pokemon.cp < pokemon.cp) {
                                 this.stats.highest_pokemon = pokemon
                             }
@@ -311,6 +317,19 @@ export default {
             let maxCp     = (baseAttack + individualAttack) * Math.pow((baseDefense + individualDefense), 0.5) * Math.pow((baseStamina + individualStamina), 0.5) * (Math.pow(LevelToCPM['40'], 2) / 10)
 
             return maxCp / perfectCp
+        },
+
+        generateMaxAndPerfectCPString(pokemonId, individualAttack, individualDefense, individualStamina) {
+            let pokemon = this.findPokemonById(pokemonId)
+
+            let baseAttack  = pokemon.stats.attack
+            let baseDefense = pokemon.stats.defense
+            let baseStamina = pokemon.stats.stamina
+
+            let perfectCp = (baseAttack + 15) * Math.pow((baseDefense + 15), 0.5) * Math.pow((baseStamina + 15), 0.5) * (Math.pow(LevelToCPM['40'], 2) / 10)
+            let maxCp     = (baseAttack + individualAttack) * Math.pow((baseDefense + individualDefense), 0.5) * Math.pow((baseStamina + individualStamina), 0.5) * (Math.pow(LevelToCPM['40'], 2) / 10)
+
+            return Math.round(maxCp) + " / " + Math.round(perfectCp)
         },
 
         generateMovesList() {

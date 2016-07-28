@@ -39,9 +39,16 @@ import 'font-awesome/css/font-awesome.min.css'
 import 'sweetalert/dist/sweetalert.css'
 import '../css/app.css'
 
+import 'bootstrap'
 import 'sweetalert'
 
 export default {
+
+    ready() {
+        jQuery('body').tooltip({
+            selector: '[data-toggle="tooltip"]'
+        })
+    }
 
 }
 </script>
