@@ -45,3 +45,15 @@ def login():
         return jsonify(
             player=player
         )
+
+@blueprint.route('/logout', methods=['GET'])
+def logout():
+    if 'username' in session:
+        current_app.api_container.remove(session['username'])
+
+        session.pop('username')
+
+    return jsonify(
+        ok      = True,
+        message = "Logout successfully"
+    )

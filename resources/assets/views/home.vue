@@ -30,7 +30,7 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-xs-12 col-md-4 text-center button-block">
-                        <button type="button" class="btn btn-md btn-danger full-width" v-on:click="switchAccount" id="switch-account">Switch Account</a>
+                        <button type="button" class="btn btn-md btn-danger full-width" v-on:click="logout" id="logout">Logout</a>
                     </div>
                     <div class="col-xs-12 col-md-4 text-center button-block">
                         <button type="button" class="btn btn-md btn-info full-width" v-on:click="showPlayerStats" id="show-player-stats">Show Player Stats</a>
@@ -350,9 +350,20 @@ export default {
             }
         },
 
-        switchAccount() {
-            this.player   = null
-            this.pokemons = []
+        logout() {
+            api.auth.logout({}).then(
+                response => {
+                    this.player       = null
+                    this.pokemons     = []
+                    this.player_stats = null
+                },
+
+                response => {
+                    console.log(response)
+
+                    this.alertError('Unknow error!')
+                }
+            )
         },
 
         showPlayerStats() {
