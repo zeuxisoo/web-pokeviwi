@@ -73,4 +73,4 @@ def release():
         ok      = status,
         message = message,
         candy   = candy
-    )
+    ), 200 if status is True else 400
