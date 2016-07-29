@@ -1,7 +1,6 @@
 from flask import Blueprint
-from flask import jsonify
+from flask import jsonify, session, current_app
 from enum import Enum
-from ...utils import api
 
 blueprint = Blueprint('api_player', __name__)
 
@@ -13,9 +12,9 @@ class PokeBallType(Enum):
 
 @blueprint.route('/stats', methods=['POST'])
 def stats():
-    api.get_inventory()
+    api = current_app.api_container.get(session['username'])
 
-    response_dict   = api.call()
+    response_dict   = api.get_inventory()
     inventory_items = response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
 
     #

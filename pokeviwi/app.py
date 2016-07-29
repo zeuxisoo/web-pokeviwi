@@ -4,7 +4,6 @@ import json
 from os import path
 from flask import Flask
 from flask import url_for
-from .utils import api
 
 def create_app(config=None, enable_route=True):
     app = Flask(__name__, template_folder='views')
@@ -25,14 +24,16 @@ def create_app(config=None, enable_route=True):
     elif config:
         app.config.from_pyfile(path.abspath(config))
 
-    register_pgoapi(app)
+    register_api_container(app)
     register_jinja2(app)
     register_route(app)
 
     return app
 
-def register_pgoapi(app):
-    app.api = api
+def register_api_container(app):
+    from .utils import ApiContainer
+
+    app.api_container = ApiContainer()
 
 def register_jinja2(app):
     @app.context_processor

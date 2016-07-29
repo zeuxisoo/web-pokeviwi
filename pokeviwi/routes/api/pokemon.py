@@ -1,7 +1,6 @@
 from flask import Blueprint
-from flask import request, jsonify
+from flask import request, jsonify, session, current_app
 from enum import Enum
-from ...utils import api
 
 blueprint = Blueprint('api_pokemon', __name__)
 
@@ -14,9 +13,9 @@ class ReleaseResultType(Enum):
 
 @blueprint.route('/all', methods=['POST'])
 def all():
-    api.get_inventory()
+    api = current_app.api_container.get(session['username'])
 
-    response_dict   = api.call()
+    response_dict   = api.get_inventory()
     all_pokemons    = []
     inventory_items = response_dict['responses']['GET_INVENTORY']['inventory_delta']['inventory_items']
 
@@ -51,8 +50,6 @@ def all():
 def release():
     pokemon_id = request.json['pokemon_id']
 
-    print(pokemon_id)
-
     status  = True
     message = ""
     candy   = 0
@@ -61,10 +58,9 @@ def release():
         status  = False
         message = "Please provide pokemon id to transfer"
     else:
-        api.release_pokemon(pokemon_id=int(pokemon_id))
+        api = current_app.api_container.get(session['username'])
 
-        response_dict  = api.call()
-
+        response_dict  = api.release_pokemon(pokemon_id=int(pokemon_id))
         release_result = response_dict['responses']['RELEASE_POKEMON']['result']
 
         if release_result != ReleaseResultType.SUCCESS.value:

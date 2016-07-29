@@ -1,1 +1,1 @@
-from .pokemongo_api import api
+from .container import ApiContainer

@@ -1,6 +1,6 @@
 from flask import Blueprint
-from flask import request, jsonify
-from ...utils import api
+from flask import request, jsonify, session, current_app
+from pgoapi import pgoapi
 
 blueprint = Blueprint('api_auth', __name__)
 
@@ -10,6 +10,7 @@ def login():
     password    = request.json['password']
     auth_method = request.json['auth_method']
 
+    api = pgoapi.PGoApi()
     api.set_position(0, 0, 0)
 
     if not api.login(auth_method, username, password):
@@ -18,9 +19,7 @@ def login():
             message="Invalid account information"
         ), 401
     else:
-        api.get_player()
-
-        response_dict = api.call()
+        response_dict = api.get_player()
         player_data   = response_dict['responses']['GET_PLAYER']['player_data']
 
         #
@@ -37,6 +36,11 @@ def login():
             max_item_storage    = player_data['max_item_storage'],
             created_at          = player_data['creation_timestamp_ms'],
         )
+
+        #
+        session['username'] = player_data['username']
+
+        current_app.api_container.add(player_data['username'], api)
 
         return jsonify(
             player=player
