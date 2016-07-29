@@ -146,6 +146,8 @@
                 </table>
             </div>
         </div>
+
+        <a href="#" class="scroll-to-top">&uarr;</a>
     </div>
 </template>
 
@@ -161,6 +163,37 @@
 
 .full-width {
     width: 100%;
+}
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 9999;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    line-height: 30px;
+    background: #f5f5f5;
+    color: #444;
+    cursor: pointer;
+    border: 0;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: opacity 0.2s ease-out;
+    opacity: 0;
+}
+
+.scroll-to-top:hover {
+    background: #e9ebec;
+}
+
+.scroll-to-top.show {
+    opacity: 1;
+}
+
+.scroll-to-top a {
+    text-decoration: none;
 }
 
 th, td {
@@ -223,6 +256,33 @@ import PokemonData from '../data/pokemon-data.json'
 import Moves from '../data/moves.json'
 
 export default {
+
+    ready() {
+        let scrollTrigger = 100
+        let backToTop = () => {
+            let scrollTop = jQuery(window).scrollTop()
+
+            if (scrollTop > scrollTrigger) {
+                jQuery('.scroll-to-top').addClass('show')
+            }else{
+                jQuery('.scroll-to-top').removeClass('show')
+            }
+        }
+
+        backToTop()
+
+        jQuery(window).on('scroll', () => {
+            backToTop()
+        })
+
+        jQuery('.scroll-to-top').on('click', (e) => {
+            e.preventDefault()
+
+            jQuery('html,body').animate({
+                scrollTop: 0
+            }, 700)
+        })
+    },
 
     data() {
         return {
