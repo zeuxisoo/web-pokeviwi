@@ -23,13 +23,17 @@
         <div class="container-fluid">
             <router-view></router-view>
         </div>
+        <div class="container-fluid">
+            <hr>
+            <small class="text-muted">&copy; Notim</small>
+        </div>
     </div>
 </template>
 
 <style>
 body {
     margin-top: 70px;
-    margin-bottom: 70px;
+    margin-bottom: 20px;
 }
 </style>
 

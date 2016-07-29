@@ -257,7 +257,7 @@ import Moves from '../data/moves.json'
 
 export default {
 
-    ready() {
+    created() {
         let scrollTrigger = 100
         let backToTop = () => {
             let scrollTop = jQuery(window).scrollTop()
@@ -275,7 +275,7 @@ export default {
             backToTop()
         })
 
-        jQuery('.scroll-to-top').on('click', (e) => {
+        jQuery("body").on('click', '.scroll-to-top', (e) => {
             e.preventDefault()
 
             jQuery('html,body').animate({
