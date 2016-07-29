@@ -12,4 +12,8 @@ export default class Pokemon extends Base {
         return this.vue.http.post(this.apiUrl('/pokemon/all'), params)
     }
 
+    release(params) {
+        return this.vue.http.post(this.apiUrl('/pokemon/release'), params)
+    }
+
 }

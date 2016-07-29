@@ -4,7 +4,7 @@ import json
 from os import path
 from flask import Flask
 from flask import url_for
-from pgoapi import PGoApi
+from .utils import api
 
 def create_app(config=None, enable_route=True):
     app = Flask(__name__, template_folder='views')
@@ -32,8 +32,6 @@ def create_app(config=None, enable_route=True):
     return app
 
 def register_pgoapi(app):
-    api = PGoApi()
-
     app.api = api
 
 def register_jinja2(app):

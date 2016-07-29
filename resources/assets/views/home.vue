@@ -107,6 +107,7 @@
                             <th class="stamina">STA</th>
                             <th v-on:click="sortBy('piv')">IV%</th>
                             <th v-on:click="sortBy('pcp')">CP%</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,6 +137,9 @@
                                 <span data-toggle="tooltip" data-placement="top" title="{{ pokemon.maxAndPerfectCPString }}">
                                     {{ pokemon.perfectCP | formatPercentageWith2Fixed }}
                                 </span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-xs btn-release" v-on:click="release" data-pokemon-id="{{ pokemon.id }}" data-pokemon-name="{{ (pokemon.nickname || pokemon.name || '') | formatName }}">Transfer</button>
                             </td>
                         </tr>
                     </tbody>
@@ -199,10 +203,21 @@ td.stamina {
 .table-striped > tbody > tr:nth-of-type(odd) {
     background-color: #fbfbfb;
 }
+
+.btn-release {
+    color: #FFFFFF;
+    background-color: #f1c40f;
+}
+
+.text-release {
+    color: #0D5E86;
+}
 </style>
 
 <script>
 import api from '../api'
+import MessageHelper from '../helpers/message'
+
 import LevelToCPM from '../data/level-to-cpm.json'
 import PokemonData from '../data/pokemon-data.json'
 import Moves from '../data/moves.json'
@@ -371,6 +386,36 @@ export default {
                         showButton.prop("disabled", false)
 
                         this.alertError('Unknow error!')
+                    }
+                )
+            }
+        },
+
+        release(event) {
+            let pokemonId   = jQuery(event.currentTarget).data('pokemonId')
+            let pokemonName = jQuery(event.currentTarget).data('pokemonName')
+
+            if (pokemonId === null || pokemonId === "") {
+                this.alertError('Not found pokemon id')
+            }else{
+                api.pokemon.release({
+                    pokemon_id: pokemonId
+                }).then(
+                    response => {
+                        let data  = response.data
+                        let candy = data.candy
+
+                        // Remove transfered pokemon in pokemon list
+                        this.pokemons = this.pokemons.filter(pokemon => {
+                            return pokemon.id !== pokemonId
+                        });
+
+                        MessageHelper.success(`Pokemon: <strong class='text-release'>${pokemonName}</strong> transferred, Candy: <strong class='text-release'>${candy}</strong>`)
+                    },
+                    response => {
+                        console.log(response)
+
+                        this.alertError('Transfer action failed!')
                     }
                 )
             }

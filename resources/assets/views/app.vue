@@ -37,6 +37,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min'
 import 'font-awesome/css/font-awesome.min.css'
 import 'sweetalert/dist/sweetalert.css'
+import 'toastr/build/toastr.min.css'
 import '../css/app.css'
 
 import 'bootstrap'

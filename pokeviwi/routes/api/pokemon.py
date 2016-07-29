@@ -1,12 +1,19 @@
 from flask import Blueprint
-from flask import request, jsonify, current_app
+from flask import request, jsonify
+from enum import Enum
+from ...utils import api
 
 blueprint = Blueprint('api_pokemon', __name__)
 
+class ReleaseResultType(Enum):
+    UNSET                = 0
+    SUCCESS              = 1
+    POKEMON_DEPLOYED     = 2
+    FAILED               = 3
+    ERROR_POKEMON_IS_EGG = 4
+
 @blueprint.route('/all', methods=['POST'])
 def all():
-    api = current_app.api
-
     api.get_inventory()
 
     response_dict   = api.call()
@@ -18,7 +25,7 @@ def all():
             pokemon = i['inventory_item_data']['pokemon_data']
 
             all_pokemons.append(dict(
-                id               = pokemon['id'],
+                id               = str(pokemon['id']),
                 pokemon_id       = pokemon['pokemon_id'],
                 cp               = pokemon['cp'],
                 hp               = pokemon['stamina'],
@@ -36,5 +43,38 @@ def all():
             ))
 
     return jsonify(
-        pokemons=all_pokemons
+        pokemons=all_pokemons,
+        inventory_items=inventory_items
+    )
+
+@blueprint.route('/release', methods=['POST'])
+def release():
+    pokemon_id = request.json['pokemon_id']
+
+    print(pokemon_id)
+
+    status  = True
+    message = ""
+    candy   = 0
+
+    if pokemon_id is None or pokemon_id == "":
+        status  = False
+        message = "Please provide pokemon id to transfer"
+    else:
+        api.release_pokemon(pokemon_id=int(pokemon_id))
+
+        response_dict  = api.call()
+
+        release_result = response_dict['responses']['RELEASE_POKEMON']['result']
+
+        if release_result != ReleaseResultType.SUCCESS.value:
+            message = "Cannot transfer pokemon, Please make sure this pokemon is exists"
+        else:
+            message = "Pokemon transferred"
+            candy   = response_dict['responses']['RELEASE_POKEMON']['candy_awarded']
+
+    return jsonify(
+        ok      = status,
+        message = message,
+        candy   = candy
     )
