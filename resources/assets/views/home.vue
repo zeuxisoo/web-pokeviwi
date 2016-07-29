@@ -344,7 +344,7 @@ export default {
                         loginButton.html("Login")
                         loginButton.prop("disabled", false)
 
-                        this.alertError('Unknow error!')
+                        this.alertError('Unable to access response from login server, Please try later')
                     }
                 )
             }
@@ -361,7 +361,7 @@ export default {
                 response => {
                     console.log(response)
 
-                    this.alertError('Unknow error!')
+                    this.alertError('Cannot logout from application')
                 }
             )
         },
@@ -389,7 +389,7 @@ export default {
                     showButton.html("Show Player Stats")
                     showButton.prop("disabled", false)
 
-                    this.alertError('Unknow error!')
+                    this.alertError('Cannot show the player stats')
                 }
             )
         },
@@ -456,7 +456,7 @@ export default {
                         showButton.html("Show Pokemons")
                         showButton.prop("disabled", false)
 
-                        this.alertError('Unknow error!')
+                        this.alertError('Cannot show the pokemon list')
                     }
                 )
             }
