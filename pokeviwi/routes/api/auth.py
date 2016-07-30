@@ -1,6 +1,7 @@
 from flask import Blueprint
 from flask import request, jsonify, session, current_app
 from pgoapi import pgoapi
+from ...utils import require_login
 
 blueprint = Blueprint('api_auth', __name__)
 
@@ -47,6 +48,7 @@ def login():
         )
 
 @blueprint.route('/logout', methods=['GET'])
+@require_login
 def logout():
     if 'username' in session:
         current_app.api_container.remove(session['username'])

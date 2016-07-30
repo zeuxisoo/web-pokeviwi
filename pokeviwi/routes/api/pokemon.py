@@ -1,6 +1,7 @@
 from flask import Blueprint
 from flask import request, jsonify, session, current_app
 from enum import Enum
+from ...utils import require_login
 
 blueprint = Blueprint('api_pokemon', __name__)
 
@@ -12,6 +13,7 @@ class ReleaseResultType(Enum):
     ERROR_POKEMON_IS_EGG = 4
 
 @blueprint.route('/all', methods=['POST'])
+@require_login
 def all():
     api = current_app.api_container.get(session['username'])
 
@@ -47,6 +49,7 @@ def all():
     )
 
 @blueprint.route('/release', methods=['POST'])
+@require_login
 def release():
     pokemon_id = request.json['pokemon_id']
 

@@ -1,6 +1,7 @@
 from flask import Blueprint
 from flask import jsonify, session, current_app
 from enum import Enum
+from ...utils import require_login
 
 blueprint = Blueprint('api_player', __name__)
 
@@ -11,6 +12,7 @@ class PokeBallType(Enum):
     MASTER = 4
 
 @blueprint.route('/stats', methods=['POST'])
+@require_login
 def stats():
     api = current_app.api_container.get(session['username'])
 
