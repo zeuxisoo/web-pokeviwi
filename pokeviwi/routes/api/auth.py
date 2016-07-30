@@ -44,8 +44,9 @@ def login():
         current_app.api_container.add(player_data['username'], api)
 
         return jsonify(
-            ok     =  True,
-            player = player
+            ok      =  True,
+            message = "",
+            player  = player
         )
 
 @blueprint.route('/logout', methods=['GET'])
