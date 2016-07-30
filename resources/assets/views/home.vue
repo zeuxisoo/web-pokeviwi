@@ -369,9 +369,19 @@ export default {
                 },
 
                 response => {
-                    console.log(response)
+                    let data = response.data
 
-                    this.alertError('Cannot logout from application')
+                    if (data.ok === false) {
+                        let message = ""
+
+                        if (data.message && data.message != "")  {
+                            message = data.message
+                        }else{
+                            message = 'Cannot logout from application'
+                        }
+
+                        this.alertError(message)
+                    }
                 }
             )
         },
