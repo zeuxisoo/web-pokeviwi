@@ -72,6 +72,8 @@ def stats():
                 profile_data['poke_stop_visits'] = player_stats['poke_stop_visits']
 
     return jsonify(
+        ok           = True,
+        message      = "",
         player_stats = dict(
             poke_balls   = poke_balls,
             profile_data = profile_data

@@ -44,8 +44,10 @@ def all():
             ))
 
     return jsonify(
-        pokemons=all_pokemons,
-        inventory_items=inventory_items
+        ok              = True,
+        message         = "",
+        pokemons        = all_pokemons,
+        inventory_items = inventory_items
     )
 
 @blueprint.route('/release', methods=['POST'])

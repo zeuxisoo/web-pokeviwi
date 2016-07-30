@@ -404,8 +404,6 @@ export default {
                 },
 
                 response => {
-                    console.log(response)
-
                     showButton.html("Show Player Stats")
                     showButton.prop("disabled", false)
 
@@ -471,8 +469,6 @@ export default {
                         showButton.prop("disabled", false)
                     },
                     response => {
-                        console.log(response)
-
                         showButton.html("Show Pokemons")
                         showButton.prop("disabled", false)
 
@@ -504,8 +500,6 @@ export default {
                         MessageHelper.success(`Pokemon: <strong class='text-release'>${pokemonName}</strong> transferred, Candy: <strong class='text-release'>${candy}</strong>`)
                     },
                     response => {
-                        console.log(response)
-
                         this.alertError('Transfer action failed!')
                     }
                 )
