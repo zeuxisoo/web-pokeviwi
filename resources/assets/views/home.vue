@@ -339,12 +339,22 @@ export default {
                     },
 
                     response => {
-                        console.log(response)
+                        let data = response.data
+
+                        if (data.ok === false) {
+                            let message = ""
+
+                            if (data.message && data.message != "")  {
+                                message = data.message
+                            }else{
+                                message = 'Unable to access response from login server, Please try later'
+                            }
+
+                            this.alertError(message)
+                        }
 
                         loginButton.html("Login")
                         loginButton.prop("disabled", false)
-
-                        this.alertError('Unable to access response from login server, Please try later')
                     }
                 )
             }

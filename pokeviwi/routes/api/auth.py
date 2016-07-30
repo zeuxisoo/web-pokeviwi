@@ -16,8 +16,8 @@ def login():
 
     if not api.login(auth_method, username, password):
         return jsonify(
-            ok=False,
-            message="Invalid account information"
+            ok      = False,
+            message = "Invalid account information"
         ), 401
     else:
         response_dict = api.get_player()
@@ -44,7 +44,8 @@ def login():
         current_app.api_container.add(player_data['username'], api)
 
         return jsonify(
-            player=player
+            ok     =  True,
+            player = player
         )
 
 @blueprint.route('/logout', methods=['GET'])
