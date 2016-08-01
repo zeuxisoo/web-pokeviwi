@@ -139,7 +139,7 @@
                                 </span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-xs btn-release" v-on:click="release" data-pokemon-id="{{ pokemon.id }}" data-pokemon-name="{{ pokemon.name | formatName }}">Transfer</button>
+                                <button type="button" class="btn btn-xs btn-release" v-on:click="release($event, pokemon.id)" data-pokemon-name="{{ pokemon.name | formatName }}">Transfer</button>
                             </td>
                         </tr>
                     </tbody>
@@ -479,8 +479,7 @@ export default {
             }
         },
 
-        release(event) {
-            let pokemonId   = jQuery(event.currentTarget).data('pokemonId')
+        release(event, pokemonId) {
             let pokemonName = jQuery(event.currentTarget).data('pokemonName')
 
             if (pokemonId === null || pokemonId === "") {
