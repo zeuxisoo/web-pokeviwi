@@ -114,8 +114,8 @@
                         <tr v-for="pokemon in pokemons | orderBy sortKey -1">
                             <td>
                                 <div class="name pull-left">
-                                    <img v-bind:src="pokemon.pokemon_id | pokemonIcon">
-                                    {{ (pokemon.nickname || pokemon.name || '') | formatName }}
+                                    <img v-bind:src="pokemon.pokemon_id | pokemonIcon" v-on:click="rename($event, pokemon.id)" data-pokemon-icon="{{ pokemon.pokemon_id | pokemonIcon }}">
+                                    {{ pokemon.name | formatName }}
                                 </div>
                             </td>
                             <td>
@@ -139,7 +139,7 @@
                                 </span>
                             </td>
                             <td>
-                                <button type="button" class="btn btn-xs btn-release" v-on:click="release" data-pokemon-id="{{ pokemon.id }}" data-pokemon-name="{{ (pokemon.nickname || pokemon.name || '') | formatName }}">Transfer</button>
+                                <button type="button" class="btn btn-xs btn-release" v-on:click="release" data-pokemon-id="{{ pokemon.id }}" data-pokemon-name="{{ pokemon.name | formatName }}">Transfer</button>
                             </td>
                         </tr>
                     </tbody>
@@ -250,6 +250,7 @@ td.stamina {
 <script>
 import api from '../api'
 import MessageHelper from '../helpers/message'
+import * as filters from '../filters'
 
 import LevelToCPM from '../data/level-to-cpm.json'
 import PokemonData from '../data/pokemon-data.json'
@@ -438,7 +439,7 @@ export default {
                         for(let i=0; i<pokemons.length; i++) {
                             let pokemon = pokemons[i]
 
-                            pokemons[i].name      = this.findPokemonById(pokemon.pokemon_id).name
+                            pokemons[i].name      = pokemon.nickname || this.findPokemonDataById(pokemon.pokemon_id).name || ""
                             pokemons[i].level     = this.determineLevel(pokemon.cp_multiplier)
                             pokemons[i].perfectIV = this.determinePerfectIV(pokemon)
                             pokemons[i].perfectCP = this.determinePerfectCP(pokemon.pokemon_id, pokemon.attack, pokemon.defense, pokemon.stamina)
@@ -506,6 +507,51 @@ export default {
             }
         },
 
+        rename(event, pokemonId) {
+            let pokemonName = filters.formatName(this.findPokemonById(pokemonId).name)
+            let pokemonIcon = jQuery(event.currentTarget).data('pokemonIcon')
+
+            swal({
+                title: "Rename pokemon",
+                text: `
+                    <p><img src='${pokemonIcon}'></p>
+                    <br>
+                    <small>${pokemonName}</small>
+                `,
+                html: true,
+                type: "input",
+                showCancelButton: true,
+                closeOnConfirm: false,
+                animation: "slide-from-top",
+                inputPlaceholder: pokemonName,
+            }, newName => {
+                if (newName === false || newName === "") {
+                    swal.showInputError("Please eneter pokemon name to rename")
+                    return false
+                }else{
+                    swal.close()
+
+                    api.pokemon.rename({
+                        pokemon_id: pokemonId,
+                        name      : newName
+                    }).then(
+                        response => {
+                            this.pokemons.forEach(pokemon => {
+                                if (pokemon.id == pokemonId) {
+                                    pokemon.name = newName
+                                }
+                            })
+
+                            MessageHelper.success(`Rename <strong>${pokemonName}</strong> to <strong>${newName}</strong> success`)
+                        },
+                        response => {
+                            this.alertError('Rename action failed!')
+                        }
+                    )
+                }
+            })
+        },
+
         sortBy(name) {
             let sortMap = {
                 'cp' : 'cp',
@@ -528,6 +574,19 @@ export default {
         },
 
         findPokemonById(pokemonId) {
+            let pokemon
+
+            for(let i=0; i<this.pokemons.length; i++) {
+                if (this.pokemons[i].id == pokemonId) {
+                    pokemon = this.pokemons[i]
+                    break
+                }
+            }
+
+            return pokemon
+        },
+
+        findPokemonDataById(pokemonId) {
             let pokemon
 
             for(let i=0; i<PokemonData.length; i++) {
@@ -569,7 +628,7 @@ export default {
         },
 
         determinePerfectCP(pokemonId, individualAttack, individualDefense, individualStamina) {
-            let pokemon = this.findPokemonById(pokemonId)
+            let pokemon = this.findPokemonDataById(pokemonId)
 
             let baseAttack  = pokemon.stats.attack
             let baseDefense = pokemon.stats.defense
@@ -582,7 +641,7 @@ export default {
         },
 
         generateMaxAndPerfectCPString(pokemonId, individualAttack, individualDefense, individualStamina) {
-            let pokemon = this.findPokemonById(pokemonId)
+            let pokemon = this.findPokemonDataById(pokemonId)
 
             let baseAttack  = pokemon.stats.attack
             let baseDefense = pokemon.stats.defense
@@ -619,19 +678,19 @@ export default {
         },
 
         calculateMaxCpMultiplier(pokemonId) {
-            let baseStats = this.findPokemonById(pokemonId).stats
+            let baseStats = this.findPokemonDataById(pokemonId).stats
 
             return (baseStats.attack + 15) * Math.sqrt(baseStats.defense + 15) * Math.sqrt(baseStats.stamina + 15)
         },
 
         calculateMinCpMultiplier(pokemonId) {
-            let baseStats = this.findPokemonById(pokemonId).stats
+            let baseStats = this.findPokemonDataById(pokemonId).stats
 
             return baseStats.attack * Math.sqrt(baseStats.defense) * Math.sqrt(baseStats.stamina)
         },
 
         calculateCpMultiplier(pokemon) {
-            let baseStats = this.findPokemonById(pokemon.pokemon_id).stats
+            let baseStats = this.findPokemonDataById(pokemon.pokemon_id).stats
 
             return (baseStats.attack + pokemon.attack) *
                     Math.sqrt(baseStats.defense + pokemon.defense) *

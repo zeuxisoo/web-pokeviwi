@@ -12,6 +12,13 @@ class ReleaseResultType(Enum):
     FAILED               = 3
     ERROR_POKEMON_IS_EGG = 4
 
+class RenameResultType(Enum):
+    UNSET                   = 0;
+    SUCCESS                 = 1;
+    ERROR_INVALID_NICKNAME  = 2;
+    ERROR_POKEMON_NOT_FOUND = 3;
+    ERROR_POKEMON_IS_EGG    = 4;
+
 @blueprint.route('/all', methods=['POST'])
 @require_login
 def all():
@@ -79,4 +86,39 @@ def release():
         ok      = status,
         message = message,
         candy   = candy
+    ), 200 if status is True else 400
+
+@blueprint.route('/rename', methods=['POST'])
+@require_login
+def rename():
+    pokemon_id = request.json['pokemon_id']
+    name       = request.json['name']
+
+    status  = False
+    message = ""
+
+    if pokemon_id is None or pokemon_id == "":
+        message = "Please provide pokemon id to rename"
+    elif name is None or name == "":
+        message = "Please provide name to rename"
+    else:
+        api = current_app.api_container.get(session['username'])
+
+        response_dict = api.nickname_pokemon(pokemon_id=int(pokemon_id), nickname=name)
+        rename_result = response_dict['responses']['NICKNAME_POKEMON']['result']
+
+        if rename_result == RenameResultType.ERROR_INVALID_NICKNAME.value:
+            message = "Cannot rename pokemon, invalid pokemon name format"
+        elif rename_result == RenameResultType.ERROR_POKEMON_NOT_FOUND.value:
+            message = "Cannot rename pokemon, please make sure this pokemon is exists"
+        elif rename_result == RenameResultType.ERROR_POKEMON_IS_EGG.value:
+            message = "Cannot rename pokemon, this is not pokemon, it is egg"
+        else:
+            status  = True
+            message = "Pokemon renamed"
+
+    return jsonify(
+        ok      = status,
+        message = message,
+        response_dict = response_dict,
     ), 200 if status is True else 400
