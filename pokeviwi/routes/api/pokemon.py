@@ -26,21 +26,22 @@ def all():
             pokemon = i['inventory_item_data']['pokemon_data']
 
             all_pokemons.append(dict(
-                id               = str(pokemon['id']),
-                pokemon_id       = pokemon['pokemon_id'],
-                cp               = pokemon['cp'],
-                hp               = pokemon['stamina'] if 'stamina' in pokemon else 0,
-                hp_max           = pokemon['stamina_max'] if 'stamina_max' in pokemon else 0,
-                move1            = pokemon['move_1'],
-                move2            = pokemon['move_2'],
-                height_m         = pokemon['height_m'],
-                weight_kg        = pokemon['weight_kg'],
-                attack           = pokemon['individual_attack'] if 'individual_attack' in pokemon else 0,
-                defense          = pokemon['individual_defense'] if 'individual_defense' in pokemon else 0,
-                stamina          = pokemon['individual_stamina'] if 'individual_stamina' in pokemon else 0,
-                cp_multiplier    = pokemon['cp_multiplier'],
-                nickname         = pokemon['nickname'] if 'nickname' in pokemon else "",
-                creation_time_ms = pokemon['creation_time_ms'],
+                id                       = str(pokemon['id']),
+                pokemon_id               = pokemon['pokemon_id'],
+                cp                       = pokemon['cp'],
+                hp                       = pokemon['stamina'] if 'stamina' in pokemon else 0,
+                hp_max                   = pokemon['stamina_max'] if 'stamina_max' in pokemon else 0,
+                move1                    = pokemon['move_1'],
+                move2                    = pokemon['move_2'],
+                height_m                 = pokemon['height_m'],
+                weight_kg                = pokemon['weight_kg'],
+                attack                   = pokemon['individual_attack'] if 'individual_attack' in pokemon else 0,
+                defense                  = pokemon['individual_defense'] if 'individual_defense' in pokemon else 0,
+                stamina                  = pokemon['individual_stamina'] if 'individual_stamina' in pokemon else 0,
+                cp_multiplier            = pokemon['cp_multiplier'],
+                additional_cp_multiplier = pokemon['additional_cp_multiplier'] if 'additional_cp_multiplier' in pokemon else 0,
+                nickname                 = pokemon['nickname'] if 'nickname' in pokemon else "",
+                creation_time_ms         = pokemon['creation_time_ms'],
             ))
 
     return jsonify(

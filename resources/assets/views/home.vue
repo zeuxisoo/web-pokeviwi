@@ -440,7 +440,7 @@ export default {
 
                             pokemons[i].name      = this.findPokemonById(pokemon.pokemon_id).name
                             pokemons[i].level     = this.determineLevel(pokemon.cp_multiplier)
-                            pokemons[i].perfectIV = this.determinePerfectIV(pokemon.attack, pokemon.defense, pokemon.stamina)
+                            pokemons[i].perfectIV = this.determinePerfectIV(pokemon)
                             pokemons[i].perfectCP = this.determinePerfectCP(pokemon.pokemon_id, pokemon.attack, pokemon.defense, pokemon.stamina)
 
                             pokemons[i].move1Name = moves[pokemon.move1].Name
@@ -556,8 +556,18 @@ export default {
             return ret
         },
 
-        determinePerfectIV(attack, defense, stamina) {
-            return (attack + defense + stamina) / 45
+        determinePerfectIV(pokemon) {
+            if (Math.abs(pokemon.cp_multiplier + pokemon.additional_cp_multiplier) < 0) {
+                return (pokemon.attack + pokemon.defense + pokemon.stamina) / 45.0
+            }
+
+            let maxCp = this.calculateMaxCpMultiplier(pokemon.pokemon_id)
+            let minCp = this.calculateMinCpMultiplier(pokemon.pokemon_id)
+            let nowCp = this.calculateCpMultiplier(pokemon)
+
+            console.log(maxCp, minCp, nowCp)
+
+            return (nowCp - minCp)/(maxCp - minCp)
         },
 
         determinePerfectCP(pokemonId, individualAttack, individualDefense, individualStamina) {
@@ -608,6 +618,26 @@ export default {
             }
 
             return moveList;
+        },
+
+        calculateMaxCpMultiplier(pokemonId) {
+            let baseStats = this.findPokemonById(pokemonId).stats
+
+            return (baseStats.attack + 15) * Math.sqrt(baseStats.defense + 15) * Math.sqrt(baseStats.stamina + 15)
+        },
+
+        calculateMinCpMultiplier(pokemonId) {
+            let baseStats = this.findPokemonById(pokemonId).stats
+
+            return baseStats.attack * Math.sqrt(baseStats.defense) * Math.sqrt(baseStats.stamina)
+        },
+
+        calculateCpMultiplier(pokemon) {
+            let baseStats = this.findPokemonById(pokemon.pokemon_id).stats
+
+            return (baseStats.attack + pokemon.attack) *
+                    Math.sqrt(baseStats.defense + pokemon.defense) *
+                    Math.sqrt(baseStats.stamina + pokemon.stamina)
         }
     }
 
