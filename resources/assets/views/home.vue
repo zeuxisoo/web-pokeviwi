@@ -565,8 +565,6 @@ export default {
             let minCp = this.calculateMinCpMultiplier(pokemon.pokemon_id)
             let nowCp = this.calculateCpMultiplier(pokemon)
 
-            console.log(maxCp, minCp, nowCp)
-
             return (nowCp - minCp)/(maxCp - minCp)
         },
 
