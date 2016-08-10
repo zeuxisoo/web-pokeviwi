@@ -128,7 +128,11 @@
                             </td>
                             <td>{{ pokemon.level }}</td>
                             <td>{{ pokemon.cp }}</td>
-                            <td>{{ pokemon.hp_max }}</td>
+                            <td>
+                                <span data-toggle="tooltip" data-placement="top" title="{{ pokemon.hp }} / {{ pokemon.hp_max }}">
+                                    {{ pokemon.hp_max }}
+                                </span>
+                            </td>
                             <td class="attack">{{ pokemon.attack }}</td>
                             <td class="defense">{{ pokemon.defense }}</td>
                             <td class="stamina">{{ pokemon.stamina }}</td>
@@ -245,6 +249,10 @@ td.stamina {
 .text-release {
     color: #0D5E86;
 }
+
+.table-hover > tbody > tr:hover {
+    background: rgba(111, 232, 49, 0.39);
+}
 </style>
 
 <script>
@@ -340,19 +348,20 @@ export default {
                     },
 
                     response => {
-                        let data = response.data
+                        let data    = response.data
+                        let message = ""
 
-                        if (data.ok === false) {
-                            let message = ""
-
+                        if (data.ok && data.ok === false) {
                             if (data.message && data.message != "")  {
                                 message = data.message
                             }else{
                                 message = 'Unable to access response from login server, Please try later'
                             }
-
-                            this.alertError(message)
+                        }else{
+                            message = 'Unknow error'
                         }
+
+                        this.alertError(message)
 
                         loginButton.html("Login")
                         loginButton.prop("disabled", false)
