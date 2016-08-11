@@ -74,6 +74,8 @@ def login_google():
     data = response.json()
 
     if 'error' in data:
+        print(data)
+
         message = data['error_description']
     else:
         access_token  = data['id_token']
