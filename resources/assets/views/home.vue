@@ -1,26 +1,52 @@
 <template>
     <div id="home">
 
-        <div class="panel panel-default" v-if="player === null">
-            <div class="panel-heading">Account</div>
-            <div class="panel-body">
-                <div class="form-inline">
-                    <div class="form-group">
-                        <label class="sr-only" for="username">Username</label>
-                        <input type="username" class="form-control" id="username" placeholder="Username" v-model="username">
+        <div id="login" v-if="this.player === null">
+            <div class="panel panel-default panel-auth-method">
+                <div class="panel-heading">Auth Method</div>
+                <div class="panel-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <select class="form-control" id="auth-method" v-model="auth_method">
+                                    <option value="ptc">Ptc</option>
+                                    <option value="google">Google</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="panel panel-default" v-bind:class="{ 'hide': this.auth_method != 'ptc' }">
+                <div class="panel-heading">Pokemon Trainer Club</div>
+                <div class="panel-body">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label class="sr-only" for="username">Username</label>
+                            <input type="username" class="form-control" id="username" placeholder="Username" v-model="username">
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="password">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Password" v-model="password">
+                        </div>
+                        <button type="button" class="btn btn-default" v-on:click="loginPtc" id="login-ptc">Login</button>
                     </div>
-                    <div class="form-group">
-                        <label class="sr-only" for="password">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password" v-model="password">
+                </div>
+            </div>
+
+            <div class="panel panel-default" v-bind:class="{ 'hide': this.auth_method != 'google' }">
+                <div class="panel-heading">Google</div>
+                <div class="panel-body">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <a href="https://accounts.google.com/o/oauth2/auth?client_id=848232511240-73ri3t7plvk96pj4f85uj8otdat2alem.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code&scope=openid%20email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email" target="_blank" class="btn btn-primary">Get Auth Code</a>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="auth-code" placeholder="Paste Auth Code Here" v-model="auth_code">
+                        </div>
+                        <button type="button" class="btn btn-default" v-on:click="loginGoogle" id="login-google">Login</button>
                     </div>
-                    <div class="form-group">
-                        <label class="sr-only" for="auth_method">Auth Method</label>
-                        <select class="form-control" id="auth_method" name="auth_method" v-model="auth_method">
-                            <option value="ptc">Pokemon Trainer Club</option>
-                            <option value="google">Google Account</option>
-                        </select>
-                    </div>
-                    <button type="button" class="btn btn-default" v-on:click="login" id="login">Login</button>
                 </div>
             </div>
         </div>
@@ -200,6 +226,10 @@
     text-decoration: none;
 }
 
+#login .panel-auth-method .form-group {
+    margin-bottom: 0px;
+}
+
 th, td {
     text-align: center;
 }
@@ -298,6 +328,7 @@ export default {
             username     : "",
             password     : "",
             auth_method  : "ptc",
+            auth_code    : "",
             sorted_column: 'cp',
             player       : null,
             pokemons     : [],
@@ -319,7 +350,7 @@ export default {
     },
 
     methods: {
-        login() {
+        loginPtc() {
             if (this.username === "") {
                 this.alertError("Please enter username")
             }else if (this.password === "") {
@@ -327,15 +358,14 @@ export default {
             }else if ($.inArray(this.auth_method, ['ptc', 'google']) === false) {
                 this.alertError("Please select your account auth method")
             }else{
-                var loginButton = jQuery("button#login")
+                var loginButton = jQuery("button#login-ptc")
 
                 loginButton.html("Signing...")
                 loginButton.prop("disabled", true)
 
-                api.auth.login({
+                api.auth.loginPtc({
                     username   : this.username,
                     password   : this.password,
-                    auth_method: this.auth_method,
                 }).then(
                     response => {
                         let data   = response.data
@@ -351,8 +381,53 @@ export default {
                         let data    = response.data
                         let message = ""
 
-                        if (data.ok && data.ok === false) {
-                            if (data.message && data.message != "")  {
+                        if (data.ok == false) {
+                            if (data.message != "")  {
+                                message = data.message
+                            }else{
+                                message = 'Unable to access response from login server, Please try later'
+                            }
+                        }else{
+                            message = 'Unknow error'
+                        }
+
+                        this.alertError(message)
+
+                        loginButton.html("Login")
+                        loginButton.prop("disabled", false)
+                    }
+                )
+            }
+        },
+
+        loginGoogle() {
+            if (this.auth_code === "") {
+                this.alertError("Please get the auth code first")
+            }else{
+                var loginButton = jQuery("button#login-google")
+
+                loginButton.html("Signing...")
+                loginButton.prop("disabled", true)
+
+                api.auth.loginGoogle({
+                    auth_code: this.auth_code
+                }).then(
+                    response => {
+                        let data   = response.data
+                        let player = data.player
+
+                        this.player = player
+
+                        loginButton.html("Login")
+                        loginButton.prop('disabled', false)
+                    },
+
+                    response => {
+                        let data    = response.data
+                        let message = ""
+
+                        if (data.ok == false) {
+                            if (data.message != "")  {
                                 message = data.message
                             }else{
                                 message = 'Unable to access response from login server, Please try later'
@@ -376,6 +451,7 @@ export default {
                     this.player       = null
                     this.pokemons     = []
                     this.player_stats = null
+                    this.auth_code    = ""
                 },
 
                 response => {
@@ -607,10 +683,6 @@ export default {
             return pokemon
         },
 
-        alertError(message) {
-            swal("Error!", message, "error")
-        },
-
         determineLevel(cpm) {
             let ret = 0
 
@@ -703,6 +775,10 @@ export default {
             return (baseStats.attack + pokemon.attack) *
                     Math.sqrt(baseStats.defense + pokemon.defense) *
                     Math.sqrt(baseStats.stamina + pokemon.stamina)
+        },
+
+        alertError(message) {
+            swal("Error!", message, "error")
         }
     }
 

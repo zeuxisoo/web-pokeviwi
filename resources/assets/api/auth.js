@@ -8,8 +8,12 @@ export default class Auth extends Base {
         this.vue = vue
     }
 
-    login(params) {
-        return this.vue.http.post(this.apiUrl('/auth/login'), params)
+    loginPtc(params) {
+        return this.vue.http.post(this.apiUrl('/auth/login/ptc'), params)
+    }
+
+    loginGoogle(params) {
+        return this.vue.http.post(this.apiUrl('/auth/login/google'), params)
     }
 
     logout(data) {
