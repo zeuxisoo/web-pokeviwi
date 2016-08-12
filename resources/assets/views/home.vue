@@ -162,7 +162,7 @@
                             <td class="attack">{{ pokemon.attack }}</td>
                             <td class="defense">{{ pokemon.defense }}</td>
                             <td class="stamina">{{ pokemon.stamina }}</td>
-                            <td>{{ pokemon.perfectIV | formatPercentage }}</td>
+                            <td>{{ pokemon.perfectIV | formatPercentageWith2Fixed }}</td>
                             <td>
                                 <span data-toggle="tooltip" data-placement="top" title="{{ pokemon.maxAndPerfectCPString }}">
                                     {{ pokemon.perfectCP | formatPercentageWith2Fixed }}
@@ -704,7 +704,7 @@ export default {
             let minCp = this.calculateMinCpMultiplier(pokemon.pokemon_id)
             let nowCp = this.calculateCpMultiplier(pokemon)
 
-            return (nowCp - minCp)/(maxCp - minCp)
+            return (nowCp - minCp) / (maxCp - minCp)
         },
 
         determinePerfectCP(pokemonId, individualAttack, individualDefense, individualStamina) {
