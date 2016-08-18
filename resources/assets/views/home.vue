@@ -18,6 +18,23 @@
                 </div>
             </div>
 
+            <div class="panel panel-default">
+                <div class="panel-heading">Location</div>
+                <div class="panel-body">
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <label class="sr-only" for="latitude">Latitude</label>
+                            <input type="latitude" class="form-control" id="latitude" placeholder="Latitude" v-model="latitude">
+                        </div>
+                        <div class="form-group">
+                            <label class="sr-only" for="longitude">Longitude</label>
+                            <input type="longitude" class="form-control" id="longitude" placeholder="Longitude" v-model="longitude">
+                        </div>
+                        <button type="button" class="btn btn-default" v-on:click="currentLocation" id="current-location">Current Location</button>
+                    </div>
+                </div>
+            </div>
+
             <div class="panel panel-default" v-bind:class="{ 'hide': this.auth_method != 'ptc' }">
                 <div class="panel-heading">Pokemon Trainer Club</div>
                 <div class="panel-body">
@@ -328,6 +345,8 @@ export default {
             username     : "",
             password     : "",
             auth_method  : "ptc",
+            latitude     : 0,
+            longitude    : 0,
             auth_code    : "",
             sorted_column: 'cp',
             player       : null,
@@ -350,6 +369,37 @@ export default {
     },
 
     methods: {
+        currentLocation() {
+            if (navigator.geolocation) {
+                var currentLocationButton = jQuery("button#current-location")
+
+                currentLocationButton.html("Finding...")
+                currentLocationButton.prop("disabled", true)
+
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        let coords    = position.coords
+                        let latitude  = coords.latitude
+                        let longitude = coords.longitude
+
+                        this.latitude  = latitude
+                        this.longitude = longitude
+
+                        currentLocationButton.html("Current Location")
+                        currentLocationButton.prop("disabled", false)
+                    },
+                    () => {
+                        this.alertError('Unable to retrieve your location')
+
+                        currentLocationButton.html("Current Location")
+                        currentLocationButton.prop("disabled", false)
+                    }
+                )
+            }else{
+                this.alertError('Geolocation is not supported by your browser')
+            }
+        },
+
         loginPtc() {
             if (this.username === "") {
                 this.alertError("Please enter username")
@@ -364,8 +414,10 @@ export default {
                 loginButton.prop("disabled", true)
 
                 api.auth.loginPtc({
-                    username   : this.username,
-                    password   : this.password,
+                    username : this.username,
+                    password : this.password,
+                    latitude : this.latitude,
+                    longitude: this.longitude
                 }).then(
                     response => {
                         let data   = response.data
@@ -410,7 +462,9 @@ export default {
                 loginButton.prop("disabled", true)
 
                 api.auth.loginGoogle({
-                    auth_code: this.auth_code
+                    auth_code: this.auth_code,
+                    latitude : this.latitude,
+                    longitude: this.longitude
                 }).then(
                     response => {
                         let data   = response.data
