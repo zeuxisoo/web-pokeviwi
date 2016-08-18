@@ -20,7 +20,7 @@ def login_ptc():
     player  = dict()
 
     api = pgoapi.PGoApi()
-    api.set_position(latitude, longitude, 0)
+    api.set_position(float(latitude), float(longitude), 0)
 
     try:
         api.set_authentication(provider='ptc', username=username, password=password)
@@ -91,7 +91,7 @@ def login_google():
             expires_in    = data['expires_in']
 
             api = pgoapi.PGoApi()
-            api.set_position(latitude, longitude, 0)
+            api.set_position(float(latitude), float(longitude), 0)
 
             try:
                 api.set_authentication(provider = 'google', oauth2_refresh_token="oauth2rt_{0}".format(refresh_token))
