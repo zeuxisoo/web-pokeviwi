@@ -139,7 +139,7 @@
                 <table class="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>Pokemon</th>
+                            <th v-on:click="sortBy('name')">Pokemon</th>
                             <th>Fast</th>
                             <th>Special</th>
                             <th>Level</th>
@@ -692,9 +692,10 @@ export default {
 
         sortBy(name) {
             let sortMap = {
-                'cp' : 'cp',
-                'piv': 'perfectIV',
-                'pcp': 'perfectCP'
+                'name': 'name',
+                'cp'  : 'cp',
+                'piv' : 'perfectIV',
+                'pcp' : 'perfectCP'
             }
 
             let column = sortMap[name]
