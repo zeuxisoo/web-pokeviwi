@@ -10,16 +10,33 @@ blueprint = Blueprint('api_auth', __name__)
 
 @blueprint.route('/login/ptc', methods=['POST'])
 def login_ptc():
-    username  = request.json['username']
-    password  = request.json['password']
-    latitude  = request.json['latitude']
-    longitude = request.json['longitude']
+    username    = request.json['username']
+    password    = request.json['password']
+    latitude    = request.json['location']['latitude']
+    longitude   = request.json['location']['longitude']
+    device_info = request.json['device_info']
 
     ok      = False
     message = ""
     player  = dict()
 
-    api = pgoapi.PGoApi()
+    rebuild_device_info = {
+        'device_id'              : device_info['device_id'],
+        'android_board_name'     : device_info['android_board_name'],
+        'android_bootloader'     : device_info['android_boot_loader'],
+        'device_brand'           : device_info['device_brand'],
+        'device_model'           : device_info['device_model'],
+        'device_model_identifier': device_info['device_model_identifier'],
+        'device_model_boot'      : device_info['device_model_boot'],
+        'hardware_manufacturer'  : device_info['hardware_manufacturer'],
+        'hardware_model'         : device_info['hardware_model'],
+        'firmware_brand'         : device_info['firmware_brand'],
+        'firmware_tags'          : device_info['firmware_tags'],
+        'firmware_type'          : device_info['firmware_type'],
+        'firmware_fingerprint'   : device_info['firmware_fingerprint'],
+    }
+
+    api = pgoapi.PGoApi(device_info=rebuild_device_info)
     api.set_position(float(latitude), float(longitude), 0)
 
     try:
@@ -58,13 +75,30 @@ def login_ptc():
 
 @blueprint.route('/login/google', methods=['POST'])
 def login_google():
-    auth_code = request.json['auth_code']
-    latitude  = request.json['latitude']
-    longitude = request.json['longitude']
+    auth_code   = request.json['auth_code']
+    latitude    = request.json['location']['latitude']
+    longitude   = request.json['location']['longitude']
+    device_info = request.json['device_info']
 
     ok      = False
     message = ""
     player  = dict()
+
+    rebuild_device_info = {
+        'device_id'              : device_info['device_id'],
+        'android_board_name'     : device_info['android_board_name'],
+        'android_bootloader'     : device_info['android_boot_loader'],
+        'device_brand'           : device_info['device_brand'],
+        'device_model'           : device_info['device_model'],
+        'device_model_identifier': device_info['device_model_identifier'],
+        'device_model_boot'      : device_info['device_model_boot'],
+        'hardware_manufacturer'  : device_info['hardware_manufacturer'],
+        'hardware_model'         : device_info['hardware_model'],
+        'firmware_brand'         : device_info['firmware_brand'],
+        'firmware_tags'          : device_info['firmware_tags'],
+        'firmware_type'          : device_info['firmware_type'],
+        'firmware_fingerprint'   : device_info['firmware_fingerprint'],
+    }
 
     if len(auth_code) <= 0:
         message = "Please get the auth code first"
@@ -90,7 +124,7 @@ def login_google():
             refresh_token = data['refresh_token']
             expires_in    = data['expires_in']
 
-            api = pgoapi.PGoApi()
+            api = pgoapi.PGoApi(device_info=rebuild_device_info)
             api.set_position(float(latitude), float(longitude), 0)
 
             try:

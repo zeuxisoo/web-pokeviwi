@@ -1,68 +1,190 @@
 <template>
     <div id="home">
 
-        <div id="login" v-if="this.player === null">
-            <div class="panel panel-default panel-auth-method">
-                <div class="panel-heading">Auth Method</div>
+        <div id="home-login" v-if="this.player === null">
+            <div id="home-menu" class="panel panel-default" >
+                <div class="panel-heading">Menus</div>
                 <div class="panel-body">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <select class="form-control" id="auth-method" v-model="auth_method">
-                                    <option value="ptc">Ptc</option>
-                                    <option value="google">Google</option>
-                                </select>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-4 text-center button-block">
+                            <button type="button" class="btn btn-md btn-default full-width" v-on:click="menuAction('login')">Login</button>
+                        </div>
+                        <div class="col-xs-12 col-md-4 text-center button-block">
+                            <button type="button" class="btn btn-md btn-default full-width" v-on:click="menuAction('location')">Location</button>
+                        </div>
+                        <div class="col-xs-12 col-md-4 text-center button-block">
+                            <button type="button" class="btn btn-md btn-default full-width" v-on:click="menuAction('deviceInfo')">Device Info</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="home-menu-actions">
+                <div id="home-menu-action-login" v-if="this.menu_action === 'login'">
+                    <div class="panel panel-default panel-auth-method">
+                        <div class="panel-heading">Auth Method</div>
+                        <div class="panel-body">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <select class="form-control" id="auth-method" v-model="auth_method">
+                                            <option value="ptc">Ptc</option>
+                                            <option value="google">Google</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default" v-bind:class="{ 'hide': this.auth_method != 'ptc' }">
+                        <div class="panel-heading">Pokemon Trainer Club</div>
+                        <div class="panel-body">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <label class="sr-only" for="username">Username</label>
+                                    <input type="text" class="form-control" id="username" placeholder="Username" v-model="username">
+                                </div>
+                                <div class="form-group">
+                                    <label class="sr-only" for="password">Password</label>
+                                    <input type="password" class="form-control" id="password" placeholder="Password" v-model="password">
+                                </div>
+                                <button type="button" class="btn btn-default" v-on:click="loginPtc" id="login-ptc">Login</button>
                             </div>
                         </div>
-                    </form>
-                </div>
-            </div>
+                    </div>
 
-            <div class="panel panel-default">
-                <div class="panel-heading">Location</div>
-                <div class="panel-body">
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <label class="sr-only" for="latitude">Latitude</label>
-                            <input type="latitude" class="form-control" id="latitude" placeholder="Latitude" v-model="latitude">
+                    <div class="panel panel-default" v-bind:class="{ 'hide': this.auth_method != 'google' }">
+                        <div class="panel-heading">Google</div>
+                        <div class="panel-body">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <a href="https://accounts.google.com/o/oauth2/auth?client_id=848232511240-73ri3t7plvk96pj4f85uj8otdat2alem.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code&scope=openid%20email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email" target="_blank" class="btn btn-primary">Get Auth Code</a>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="auth-code" placeholder="Paste Auth Code Here" v-model="auth_code">
+                                </div>
+                                <button type="button" class="btn btn-default" v-on:click="loginGoogle" id="login-google">Login</button>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label class="sr-only" for="longitude">Longitude</label>
-                            <input type="longitude" class="form-control" id="longitude" placeholder="Longitude" v-model="longitude">
-                        </div>
-                        <button type="button" class="btn btn-default" v-on:click="currentLocation" id="current-location">Current Location</button>
                     </div>
                 </div>
-            </div>
 
-            <div class="panel panel-default" v-bind:class="{ 'hide': this.auth_method != 'ptc' }">
-                <div class="panel-heading">Pokemon Trainer Club</div>
-                <div class="panel-body">
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <label class="sr-only" for="username">Username</label>
-                            <input type="username" class="form-control" id="username" placeholder="Username" v-model="username">
+                <div id="home-menu-action-location" v-if="this.menu_action === 'location'">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Location</div>
+                        <div class="panel-body">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <label class="sr-only" for="latitude">Latitude</label>
+                                    <input type="latitude" class="form-control" id="latitude" placeholder="Latitude" v-model="latitude">
+                                </div>
+                                <div class="form-group">
+                                    <label class="sr-only" for="longitude">Longitude</label>
+                                    <input type="longitude" class="form-control" id="longitude" placeholder="Longitude" v-model="longitude">
+                                </div>
+                                <button type="button" class="btn btn-default" v-on:click="currentLocation" id="current-location">Current Location</button>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label class="sr-only" for="password">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="Password" v-model="password">
-                        </div>
-                        <button type="button" class="btn btn-default" v-on:click="loginPtc" id="login-ptc">Login</button>
                     </div>
                 </div>
-            </div>
 
-            <div class="panel panel-default" v-bind:class="{ 'hide': this.auth_method != 'google' }">
-                <div class="panel-heading">Google</div>
-                <div class="panel-body">
-                    <div class="form-inline">
-                        <div class="form-group">
-                            <a href="https://accounts.google.com/o/oauth2/auth?client_id=848232511240-73ri3t7plvk96pj4f85uj8otdat2alem.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code&scope=openid%20email%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email" target="_blank" class="btn btn-primary">Get Auth Code</a>
+                <div id="home-menu-action-device-info" v-if="this.menu_action === 'deviceInfo'">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Device</div>
+                        <div class="panel-body">
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="device-id" class="col-sm-2 control-label">Device</label>
+                                    <div class="col-sm-10">
+                                        <select name="devices" id="devices" class="form-control" v-model="device" v-on:change="changeDevice">
+                                            <option v-for="device in devices" v-bind:value="device.value">{{ device.name }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group text-center">
+                                    - or custom -
+                                </div>
+                                <div class="form-group">
+                                    <label for="device-id" class="col-sm-2 control-label">Device id</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="device-id" placeholder="Device id" v-model="device_id">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="android-board-name" class="col-sm-2 control-label">Android board name</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="android-board-name" placeholder="Android board name" v-model="android_board_name">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="android-boot-loader" class="col-sm-2 control-label">Android boot loader</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="android-boot-loader" placeholder="Android boot loader" v-model="android_boot_loader">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="device-brand" class="col-sm-2 control-label">Device brand</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="device-brand" placeholder="Device brand" v-model="device_brand">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="device-model" class="col-sm-2 control-label">Device model</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="device-model" placeholder="Device model" v-model="device_model">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="device-model-identifier" class="col-sm-2 control-label">Device model identifier</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="device-model-identifier" placeholder="Device model identifier" v-model="device_model_identifier">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="device-model-boot" class="col-sm-2 control-label">Device model boot</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="device-model-boot" placeholder="Device model boot" v-model="device_model_boot">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hardware-manufacturer" class="col-sm-2 control-label">Hardware manufacturer</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="hardware-manufacturer" placeholder="Hardware manufacturer" v-model="hardware_manufacturer">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hardware-model" class="col-sm-2 control-label">Hardware model</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="hardware-model" placeholder="Hardware model" v-model="hardware_model">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="firmware-brand" class="col-sm-2 control-label">Firmware brand</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="firmware-brand" placeholder="Firmware brand" v-model="firmware_brand">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="firmware-tags" class="col-sm-2 control-label">Firmware tags</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="firmware-tags" placeholder="Firmware tags" v-model="firmware_tags">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="firmware-type" class="col-sm-2 control-label">Firmware type</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="firmware-type" placeholder="Firmware type" v-model="firmware_type">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="firmware-fingerprint" class="col-sm-2 control-label">Firmware fingerprint</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="firmware-fingerprint" placeholder="Firmware fingerprint" v-model="firmware_fingerprint">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="auth-code" placeholder="Paste Auth Code Here" v-model="auth_code">
-                        </div>
-                        <button type="button" class="btn btn-default" v-on:click="loginGoogle" id="login-google">Login</button>
                     </div>
                 </div>
             </div>
@@ -73,13 +195,13 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-xs-12 col-md-4 text-center button-block">
-                        <button type="button" class="btn btn-md btn-danger full-width" v-on:click="logout" id="logout">Logout</a>
+                        <button type="button" class="btn btn-md btn-danger full-width" v-on:click="logout" id="logout">Logout</button>
                     </div>
                     <div class="col-xs-12 col-md-4 text-center button-block">
-                        <button type="button" class="btn btn-md btn-info full-width" v-on:click="showPlayerStats" id="show-player-stats">Show Player Stats</a>
+                        <button type="button" class="btn btn-md btn-info full-width" v-on:click="showPlayerStats" id="show-player-stats">Show Player Stats</button>
                     </div>
                     <div class="col-xs-12 col-md-4 text-center button-block">
-                        <button type="button" class="btn btn-md btn-default full-width" v-on:click="showPokemons" id="show-pokemons">Show Pokemons</a>
+                        <button type="button" class="btn btn-md btn-default full-width" v-on:click="showPokemons" id="show-pokemons">Show Pokemons</button>
                     </div>
                 </div>
 
@@ -243,7 +365,7 @@
     text-decoration: none;
 }
 
-#login .panel-auth-method .form-group {
+#home-menu-actions .panel-auth-method .form-group {
     margin-bottom: 0px;
 }
 
@@ -310,6 +432,7 @@ import * as filters from '../filters'
 import LevelToCPM from '../data/level-to-cpm.json'
 import PokemonData from '../data/pokemon-data.json'
 import Moves from '../data/moves.json'
+import Devices from '../data/devices.json'
 
 export default {
 
@@ -338,16 +461,53 @@ export default {
                 scrollTop: 0
             }, 700)
         })
+
+        // Load device list into device configuration
+        for(let device in Devices) {
+            this.devices.push({
+                value: device,
+                name : device,
+            })
+        }
+
+        this.changeDevice()
     },
 
     data() {
         return {
-            username     : "",
-            password     : "",
-            auth_method  : "ptc",
-            latitude     : 0,
-            longitude    : 0,
-            auth_code    : "",
+            // Default devices
+            devices: [],
+
+            // Current action
+            menu_action: "login",
+
+            // Login
+            auth_method: "ptc",
+            username   : "",
+            password   : "",
+            auth_code  : "",
+
+            // Location
+            latitude : 0,
+            longitude: 0,
+
+            // Current device
+            device                 : "Samsung Galaxy S6",
+            device_id              : "",
+            android_board_name     : "",
+            android_boot_loader    : "",
+            device_brand           : "",
+            device_model           : "",
+            device_model_identifier: "",
+            device_model_boot      : "",
+            hardware_manufacturer  : "",
+            hardware_model         : "",
+            firmware_brand         : "",
+            firmware_tags          : "",
+            firmware_type          : "",
+            firmware_fingerprint   : "",
+
+            //
             sorted_column: 'cp',
             player       : null,
             pokemons     : [],
@@ -369,35 +529,8 @@ export default {
     },
 
     methods: {
-        currentLocation() {
-            if (navigator.geolocation) {
-                var currentLocationButton = jQuery("button#current-location")
-
-                currentLocationButton.html("Finding...")
-                currentLocationButton.prop("disabled", true)
-
-                navigator.geolocation.getCurrentPosition(
-                    position => {
-                        let coords    = position.coords
-                        let latitude  = coords.latitude
-                        let longitude = coords.longitude
-
-                        this.latitude  = latitude
-                        this.longitude = longitude
-
-                        currentLocationButton.html("Current Location")
-                        currentLocationButton.prop("disabled", false)
-                    },
-                    () => {
-                        this.alertError('Unable to retrieve your location')
-
-                        currentLocationButton.html("Current Location")
-                        currentLocationButton.prop("disabled", false)
-                    }
-                )
-            }else{
-                this.alertError('Geolocation is not supported by your browser')
-            }
+        menuAction(name) {
+            this.menu_action = name
         },
 
         loginPtc() {
@@ -414,10 +547,27 @@ export default {
                 loginButton.prop("disabled", true)
 
                 api.auth.loginPtc({
-                    username : this.username,
-                    password : this.password,
-                    latitude : this.latitude,
-                    longitude: this.longitude
+                    username: this.username,
+                    password: this.password,
+                    location: {
+                        latitude : this.latitude,
+                        longitude: this.longitude,
+                    },
+                    device_info: {
+                        device_id              : this.device_id,
+                        android_board_name     : this.android_board_name,
+                        android_boot_loader    : this.android_boot_loader,
+                        device_brand           : this.device_brand,
+                        device_model           : this.device_model,
+                        device_model_identifier: this.device_model_identifier,
+                        device_model_boot      : this.device_model_boot,
+                        hardware_manufacturer  : this.hardware_manufacturer,
+                        hardware_model         : this.hardware_model,
+                        firmware_brand         : this.firmware_brand,
+                        firmware_tags          : this.firmware_tags,
+                        firmware_type          : this.firmware_type,
+                        firmware_fingerprint   : this.firmware_fingerprint,
+                    }
                 }).then(
                     response => {
                         let data   = response.data
@@ -463,8 +613,25 @@ export default {
 
                 api.auth.loginGoogle({
                     auth_code: this.auth_code,
-                    latitude : this.latitude,
-                    longitude: this.longitude
+                    location : {
+                        latitude : this.latitude,
+                        longitude: this.longitude,
+                    },
+                    device_info: {
+                        device_id              : this.device_id,
+                        android_board_name     : this.android_board_name,
+                        android_boot_loader    : this.android_boot_loader,
+                        device_brand           : this.device_brand,
+                        device_model           : this.device_model,
+                        device_model_identifier: this.device_model_identifier,
+                        device_model_boot      : this.device_model_boot,
+                        hardware_manufacturer  : this.hardware_manufacturer,
+                        hardware_model         : this.hardware_model,
+                        firmware_brand         : this.firmware_brand,
+                        firmware_tags          : this.firmware_tags,
+                        firmware_type          : this.firmware_type,
+                        firmware_fingerprint   : this.firmware_fingerprint,
+                    }
                 }).then(
                     response => {
                         let data   = response.data
@@ -497,6 +664,67 @@ export default {
                     }
                 )
             }
+        },
+
+        currentLocation() {
+            if (navigator.geolocation) {
+                var currentLocationButton = jQuery("button#current-location")
+
+                currentLocationButton.html("Finding...")
+                currentLocationButton.prop("disabled", true)
+
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        let coords    = position.coords
+                        let latitude  = coords.latitude
+                        let longitude = coords.longitude
+
+                        this.latitude  = latitude
+                        this.longitude = longitude
+
+                        currentLocationButton.html("Current Location")
+                        currentLocationButton.prop("disabled", false)
+                    },
+                    () => {
+                        this.alertError('Unable to retrieve your location')
+
+                        currentLocationButton.html("Current Location")
+                        currentLocationButton.prop("disabled", false)
+                    }
+                )
+            }else{
+                this.alertError('Geolocation is not supported by your browser')
+            }
+        },
+
+        changeDevice() {
+            let device = Devices[this.device]
+
+
+            let deviceId    = ""
+            let deviceWords = "0123456789abcdef"
+
+            for(let i=0; i<device.device_id_length; i++) {
+                deviceId += deviceWords.charAt(Math.floor(Math.random() * deviceWords.length))
+            }
+
+            if (device.device_id_uppercase === true) {
+                deviceId = deviceId.toUpperCase()
+            }
+
+            this.device_id              = deviceId
+            this.android_board_name     = device.androidBoardName
+            this.android_boot_loader    = device.androidBootloader
+            this.device_brand           = device.deviceBrand
+            this.device_model           = device.deviceModel
+            this.device_model_identifier= device.deviceModelIdentifier
+            this.device_model_boot      = device.deviceModelBoot
+            this.hardware_manufacturer  = device.hardwareManufacturer
+            this.hardware_model         = device.hardwareModel
+            this.firmware_brand         = device.firmwareBrand
+            this.firmware_tags          = device.firmwareTags
+            this.firmware_type          = device.firmwareType
+            this.firmware_fingerprint   = device.FirmwareFingerprint
         },
 
         logout() {

@@ -22,7 +22,10 @@ config.plugins.push(
 );
 
 config.devServer = {
-    headers: { "Access-Control-Allow-Origin": "*" }
+    headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": "true"
+    }
 };
 
 var app = new WebpackDevServer(webpack(config), {

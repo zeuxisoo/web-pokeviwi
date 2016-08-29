@@ -1,0 +1,127 @@
+{
+    "Samsung Galaxy S6": {
+        "device_id_length": 16,
+        "device_id_uppercase": false,
+
+        "androidBoardName": "universal7420",
+        "androidBootloader": "G920FXXS3DPD2",
+        "deviceBrand": "samsung",
+        "deviceModel": "zeroflte",
+        "deviceModelIdentifier": "SM-G920F",
+        "deviceModelBoot": "qcom",
+        "hardwareManufacturer": "samsung",
+        "hardwareModel": "SM-G920F",
+        "firmwareBrand": "zerofltexx",
+        "firmwareTags": "release-keys",
+        "firmwareType": "user",
+        "FirmwareFingerprint": "samsung/zerofltexx/zeroflte:6.0.1/MMB29K/G920FXXS3DPD2:user/release-keys"
+    },
+
+    "Xperia 5z": {
+        "device_id_length": 16,
+        "device_id_uppercase": false,
+
+        "androidBoardName": "msm8994",
+        "androidBootloader": "s1",
+        "deviceBrand": "Sony",
+        "deviceModel": "E6653",
+        "deviceModelIdentifier": "E6653",
+        "deviceModelBoot": "qcom",
+        "hardwareManufacturer": "Sony",
+        "hardwareModel": "E6653",
+        "firmwareBrand": "E6653",
+        "firmwareTags": "release-keys",
+        "firmwareType": "user",
+        "FirmwareFingerprint": "Sony/E6653/E6653:6.0.1/32.2.A.0.224/456768306:user/release-keys"
+    },
+
+    "LG Optimus 2x": {
+        "device_id_length": 16,
+        "device_id_uppercase": false,
+
+        "androidBoardName": "lge",
+        "androidBootloader": "unknown",
+        "deviceBrand": "lge",
+        "deviceModel": "p990",
+        "deviceModelIdentifier": "FRG83G",
+        "deviceModelBoot": "qcom",
+        "hardwareManufacturer": "lge",
+        "hardwareModel": "LG-P990",
+        "firmwareBrand": "lge_star",
+        "firmwareTags": "release-keys",
+        "firmwareType": "user",
+        "FirmwareFingerprint": "lge/lge_star/p990/p990:2.2.2/FRG83G/lgp990-V10b.2ED2ADCFFC:user/release-keys"
+    },
+
+    "Nexus 5x": {
+        "device_id_length": 16,
+        "device_id_uppercase": false,
+
+        "androidBoardName": "bullhead",
+        "androidBootloader": "BHZ10k",
+        "deviceBrand": "google",
+        "deviceModel": "Nexus 5X",
+        "deviceModelIdentifier": "bullhead",
+        "deviceModelBoot": "qcom",
+        "hardwareManufacturer": "LGE",
+        "hardwareModel": "Nexus 5X",
+        "firmwareBrand": "bullhead",
+        "firmwareTags": "release-keys",
+        "firmwareType": "user",
+        "FirmwareFingerprint": "google/bullhead/bullhead:6.0.1/MTC19T/2741993:user/release-keys"
+    },
+
+    "Google Nexus7 GEN1 Tablet": {
+        "device_id_length": 16,
+        "device_id_uppercase": false,
+
+        "androidBoardName": "grouper",
+        "androidBootloader": "4.23",
+        "deviceBrand": "google",
+        "deviceModel": "Nexus 7",
+        "deviceModelIdentifier": "nakasi",
+        "deviceModelBoot": "qcom",
+        "hardwareManufacturer": "asus",
+        "hardwareModel": "Nexus 7",
+        "firmwareBrand": "nakasi",
+        "firmwareTags": "release-keys",
+        "firmwareType": "user",
+        "FirmwareFingerprint": "google/nakasi/grouper:5.1.1/LMY47V/1836172:user/release-keys"
+    },
+
+    "Google Nexus7 GEN2 Tablet": {
+        "device_id_length": 16,
+        "device_id_uppercase": false,
+
+        "androidBoardName": "flo",
+        "androidBootloader": "FLO-04.07",
+        "deviceBrand": "google",
+        "deviceModel": "Nexus 7",
+        "deviceModelIdentifier": "razor",
+        "deviceModelBoot": "qcom",
+        "hardwareManufacturer": "asus",
+        "hardwareModel": "Nexus 7",
+        "firmwareBrand": "razor",
+        "firmwareTags": "release-keys",
+        "firmwareType": "user",
+        "FirmwareFingerprint": "google/razor/flo:6.0.1/MOB30P/2960889:user/release-keys"
+    },
+
+    "iPhone 6 Black 64GB": {
+        "device_id_length": 40,
+        "device_id_uppercase": true,
+
+        "androidBoardName": "",
+        "androidBootloader": "",
+        "deviceBrand": "Apple",
+        "deviceModel": "iPhone",
+        "deviceModelIdentifier": "A1586",
+        "deviceModelBoot": "iphone7.1",
+        "hardwareManufacturer": "Apple",
+        "hardwareModel": "MG4F2ZP/A",
+        "firmwareBrand": "iPhone OS",
+        "firmwareTags": "",
+        "firmwareType": "9.3.4",
+        "FirmwareFingerprint": ""
+    }
+}
