@@ -3,4 +3,4 @@ Flask-Script==2.0.5
 
 enum34==1.1.6
 
--e git+https://github.com/pogodevorg/pgoapi.git@58fe49698677f7fcc4725a2048ecec5f1d666408#egg=pgoapi
+-e git+https://github.com/pogodevorg/pgoapi.git@07bc52ff7c77c0bdc0b2587f9a033df60912502b#egg=pgoapi

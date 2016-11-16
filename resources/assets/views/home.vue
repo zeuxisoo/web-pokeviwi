@@ -142,9 +142,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="device-model-boot" class="col-sm-2 control-label">Device model boot</label>
+                                    <label for="device-comms-model" class="col-sm-2 control-label">Device comms model</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="device-model-boot" placeholder="Device model boot" v-model="device_model_boot">
+                                        <input type="text" class="form-control" id="device-comms-model" placeholder="Device comms model" v-model="device_comms_model">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -499,7 +499,7 @@ export default {
             device_brand           : "",
             device_model           : "",
             device_model_identifier: "",
-            device_model_boot      : "",
+            device_comms_model     : "",
             hardware_manufacturer  : "",
             hardware_model         : "",
             firmware_brand         : "",
@@ -560,7 +560,7 @@ export default {
                         device_brand           : this.device_brand,
                         device_model           : this.device_model,
                         device_model_identifier: this.device_model_identifier,
-                        device_model_boot      : this.device_model_boot,
+                        device_comms_model     : this.device_comms_model,
                         hardware_manufacturer  : this.hardware_manufacturer,
                         hardware_model         : this.hardware_model,
                         firmware_brand         : this.firmware_brand,
@@ -624,7 +624,7 @@ export default {
                         device_brand           : this.device_brand,
                         device_model           : this.device_model,
                         device_model_identifier: this.device_model_identifier,
-                        device_model_boot      : this.device_model_boot,
+                        device_comms_model     : this.device_comms_model,
                         hardware_manufacturer  : this.hardware_manufacturer,
                         hardware_model         : this.hardware_model,
                         firmware_brand         : this.firmware_brand,
@@ -718,7 +718,7 @@ export default {
             this.device_brand           = device.deviceBrand
             this.device_model           = device.deviceModel
             this.device_model_identifier= device.deviceModelIdentifier
-            this.device_model_boot      = device.deviceModelBoot
+            this.device_comms_model     = device.deviceCommsModel
             this.hardware_manufacturer  = device.hardwareManufacturer
             this.hardware_model         = device.hardwareModel
             this.firmware_brand         = device.firmwareBrand

@@ -2,9 +2,9 @@
 *.pyc
 *.pyo
 
+/src
 /venv
 /node_modules
 /static/build
 
 /config/default.py
-
